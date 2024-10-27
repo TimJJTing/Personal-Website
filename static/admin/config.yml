@@ -1,0 +1,137 @@
+backend:
+  name: git-gateway
+  branch: main
+collections: # A list of collections the CMS should be able to edit
+  - name: "setting"
+    label: "Site Settings"
+    files:
+      - name: "configuration"
+        label: "Configuration"
+        file: "src/routes/config.md"
+        delete: false
+        fields:
+          - {
+              label: "Site name",
+              name: title,
+              widget: string,
+              default: "My website",
+            }
+          - {
+              label: Description,
+              name: description,
+              widget: string,
+              default: "this is my personal website",
+            }
+          - { label: Url, name: url, widget: string, hint: "Site Url" }
+      # links
+      - name: "links"
+        label: "External Links"
+        file: "src/routes/links.md"
+        delete: false
+        fields:
+          - {
+              label: "Layout",
+              name: layout,
+              widget: hidden,
+              hint: "DO NOT CHANGE",
+              default: links,
+            }
+          - label: Links
+            name: links
+            widget: list
+            fields:
+              - { label: Title, name: title, widget: string }
+              - { label: Url, name: url, widget: string }
+  # cv
+  - name: "about"
+    label: "About Page"
+    folder: "src/routes/about"
+    create: true
+    delete: true
+    fields:
+      - { label: "Title", name: title, widget: string, default: About }
+      - { label: Photo, name: photo, widget: image }
+      - { label: "Content", name: body, widget: markdown }
+  - name: "works" # Used in routes, ie.: /admin/collections/:slug/edit
+    label: "Work" # Used in the UI, ie.: "New Post"
+    folder: "src/routes/works" # The path to the folder where the documents are stored
+    create: true # Allow users to create new documents in this collection
+    fields: # The fields each document in this collection have
+      - { label: "Title", name: "title", widget: "string" }
+      - {
+          label: "Description",
+          name: "description",
+          widget: "string",
+          hint: "A short description.",
+        }
+      - { label: "Year", name: "year", widget: "number", value_type: "int", min: 1970 }
+      - label: Categories
+        name: categories
+        widget: list
+        hint: "work categories"
+        required: false
+      - {
+          label: "Publish",
+          name: "published",
+          widget: "boolean",
+          default: true,
+          hint: "Set to false will not publish this work.",
+        }
+      - { label: "Body", name: "body", widget: "markdown" }
+      - label: Thumbnail
+        name: thumbnail
+        widget: image
+        hint: "Thumbnail image of the work."
+        required: false
+      - label: Images
+        name: images
+        widget: list
+        hint: "Additional images of the work."
+        required: false
+        fields:
+          - { label: Image, name: image, widget: image }
+          - { label: Caption, name: caption, widget: text, required: false }
+  - name: "blog" # Used in routes, ie.: /admin/collections/:slug/edit
+    label: "Blog" # Used in the UI, ie.: "New Post"
+    folder: "src/routes/articles" # The path to the folder where the documents are stored
+    create: true # Allow users to create new documents in this collection
+    fields: # The fields each document in this collection have
+      - { label: "Title", name: "title", widget: "string" }
+      - {
+          label: "Description",
+          name: "description",
+          widget: "string",
+          hint: "A short description.",
+        }
+      - { label: "Date", name: "date", widget: "datetime", default: "{{now}}" }
+      - label: Categories
+        name: categories
+        widget: list
+        hint: "article categories"
+        required: false
+      - {
+          label: "Publish",
+          name: "published",
+          widget: "boolean",
+          default: true,
+          hint: "Set to false will not publish this article.",
+        }
+      - { label: "Body", name: "body", widget: "markdown" }
+      - label: Thumbnail
+        name: thumbnail
+        widget: image
+        hint: "Thumbnail image of the work."
+        required: false
+      - label: Images
+        name: images
+        widget: list
+        hint: "Additional images of the article."
+        required: false
+        fields:
+          - { label: Image, name: image, widget: image }
+          - { label: Caption, name: caption, widget: text, required: false }
+media_folder: "static/uploads"
+public_folder: "/uploads"
+# site_url: https://your-site.com
+# display_url: https://your-site.com
+# logo_url: https://your-site.com/images/logo.svg
