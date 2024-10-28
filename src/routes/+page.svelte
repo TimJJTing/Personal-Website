@@ -1,8 +1,18 @@
 <script>
-	import { ArticleList } from '$lib/components/lists';
-	import { WorkList } from '$lib/components/lists';
+	import { ItemList } from '$lib/components/item';
 	let { data } = $props();
 </script>
 
-<WorkList works={data.works} />
-<ArticleList articles={data.articles} />
+<header>
+	<section class="my-16">
+		<h1 class="text-6xl font-bold">{data.meta.title}</h1>
+	</section>
+</header>
+<main>
+	<section class="my-16">
+		<ItemList items={data.works} title="Works" />
+	</section>
+	<section class="my-16">
+		<ItemList items={data.articles} title="Blog" />
+	</section>
+</main>

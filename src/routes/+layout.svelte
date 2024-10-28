@@ -1,6 +1,7 @@
 <script>
 	import { page } from '$app/stores';
 	import { Nav } from '$lib/components/nav';
+	import { Footer } from '$lib/components/footer';
 	import '../app.css';
 	import Links from './links.md';
 	let { children, data: layoutData } = $props();
@@ -30,8 +31,12 @@
 	<!-- <link rel="canonical" href="https://changyentzu.com/about/" /> -->
 </svelte:head>
 
-<Nav>
-	<Links />
-</Nav>
+<div id="root" class="container relative mx-auto h-full">
+	<Nav>
+		<Links />
+	</Nav>
 
-{@render children()}
+	{@render children()}
+
+	<Footer />
+</div>

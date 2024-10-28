@@ -2,6 +2,8 @@
 	let { children } = $props();
 </script>
 
-<div>
-	{@render children?.()}
-</div>
+<nav>
+	<section>
+		{@render children?.()}
+	</section>
+</nav>

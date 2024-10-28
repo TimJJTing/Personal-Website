@@ -1,7 +1,10 @@
 <script>
-	import { ArticleList } from '$lib/components/lists';
+	import { ItemList } from '$lib/components/item';
 	let { data } = $props();
 </script>
 
-<h1>{data.meta.title}</h1>
-<ArticleList articles={data.articles} />
+<main>
+	<section class="my-8">
+		<ItemList items={data.articles} title={data.meta.title} />
+	</section>
+</main>

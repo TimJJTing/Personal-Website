@@ -1,4 +1,5 @@
 ---
+layout: _
 title: hi there
 ---
 

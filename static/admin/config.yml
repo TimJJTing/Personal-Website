@@ -49,6 +49,13 @@ collections: # A list of collections the CMS should be able to edit
     create: true
     delete: true
     fields:
+      - {
+          label: "Layout",
+          name: layout,
+          widget: hidden,
+          hint: "DO NOT CHANGE",
+          default: _,
+        }
       - { label: "Title", name: title, widget: string, default: About }
       - { label: Photo, name: photo, widget: image }
       - { label: "Content", name: body, widget: markdown }
@@ -57,6 +64,13 @@ collections: # A list of collections the CMS should be able to edit
     folder: "src/routes/works" # The path to the folder where the documents are stored
     create: true # Allow users to create new documents in this collection
     fields: # The fields each document in this collection have
+      - {
+          label: "Layout",
+          name: layout,
+          widget: hidden,
+          hint: "DO NOT CHANGE",
+          default: _,
+        }
       - { label: "Title", name: "title", widget: "string" }
       - {
           label: "Description",
@@ -64,7 +78,13 @@ collections: # A list of collections the CMS should be able to edit
           widget: "string",
           hint: "A short description.",
         }
-      - { label: "Year", name: "year", widget: "number", value_type: "int", min: 1970 }
+      - {
+          label: "Year",
+          name: "year",
+          widget: "number",
+          value_type: "int",
+          min: 1970,
+        }
       - label: Categories
         name: categories
         widget: list
@@ -91,11 +111,24 @@ collections: # A list of collections the CMS should be able to edit
         fields:
           - { label: Image, name: image, widget: image }
           - { label: Caption, name: caption, widget: text, required: false }
+      - label: Additional Links
+        name: additionalLinks
+        widget: list
+        fields:
+          - { label: Title, name: title, widget: string }
+          - { label: Url, name: url, widget: string }
   - name: "blog" # Used in routes, ie.: /admin/collections/:slug/edit
     label: "Blog" # Used in the UI, ie.: "New Post"
     folder: "src/routes/articles" # The path to the folder where the documents are stored
     create: true # Allow users to create new documents in this collection
     fields: # The fields each document in this collection have
+      - {
+          label: "Layout",
+          name: layout,
+          widget: hidden,
+          hint: "DO NOT CHANGE",
+          default: _,
+        }
       - { label: "Title", name: "title", widget: "string" }
       - {
           label: "Description",
@@ -130,7 +163,13 @@ collections: # A list of collections the CMS should be able to edit
         fields:
           - { label: Image, name: image, widget: image }
           - { label: Caption, name: caption, widget: text, required: false }
-media_folder: "static/uploads"
+      - label: Additional Links
+        name: additionalLinks
+        widget: list
+        fields:
+          - { label: Title, name: title, widget: string }
+          - { label: Url, name: url, widget: string }
+media_folder: "src/assets/uploads"
 public_folder: "/uploads"
 # site_url: https://your-site.com
 # display_url: https://your-site.com

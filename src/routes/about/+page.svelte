@@ -3,7 +3,11 @@
 	let Content = data.content;
 </script>
 
-<article>
-	<h1>{data.meta.title}</h1>
-	<Content />
-</article>
+<main>
+	<section>
+		<h1>{data.meta.title}</h1>
+		<article>
+			<Content />
+		</article>
+	</section>
+</main>
