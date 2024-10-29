@@ -5,8 +5,8 @@
 
 <main>
 	<section>
-		<h1>{data.meta.title}</h1>
 		<article>
+			<h1>{data.meta.title}</h1>
 			<Content />
 		</article>
 	</section>
