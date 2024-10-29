@@ -17,7 +17,7 @@ images:
   - image: /uploads/screen-shot-2024-10-17-at-02.13.40.png
 additionalLinks:
   - title: Check This!
-    url: google.com
+    url: www.google.com
 ---
 
 # hi
