@@ -27,8 +27,6 @@
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content={title} />
 	<meta property="twitter:description" content={description} />
-
-	<!-- <link rel="canonical" href="https://changyentzu.com/about/" /> -->
 </svelte:head>
 
 <div id="root" class="container relative mx-auto h-full">

@@ -4,7 +4,7 @@
 		['../../../assets/uploads/**/*.{avif,gif,heif,jpeg,jpg,png,tiff,webp}'],
 		{
 			eager: true,
-			query: { enhanced: true }
+			query: { enhanced: true, w: '1280;640;400;128' }
 		}
 	);
 
@@ -19,11 +19,22 @@
 </script>
 
 <script>
-	/** @type {{src: string, alt: string}}*/
-	let { src, alt } = $props();
+	/** @type {{src: string, alt: string, sizes?: string, thumbnail?: boolean}}*/
+	let {
+		src,
+		alt,
+		sizes = '(min-width:1920px) 1280px, (min-width:1080px) 640px, (min-width:768px) 400px',
+		thumbnail = false
+	} = $props();
 	const image = getImage(src);
 </script>
 
-<figure class="image">
-	<enhanced:img src={image} {alt} />
+<figure class="image" class:thumbnail>
+	<enhanced:img src={image} {alt} {sizes} />
 </figure>
+
+<style>
+	.thumbnail {
+		width: 128px;
+	}
+</style>

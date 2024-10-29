@@ -110,7 +110,7 @@ collections: # A list of collections the CMS should be able to edit
         required: false
         fields:
           - { label: Image, name: image, widget: image }
-          - { label: Caption, name: caption, widget: text, required: false }
+          - { label: Caption, name: caption, widget: text }
       - label: Additional Links
         name: additionalLinks
         widget: list
@@ -162,13 +162,13 @@ collections: # A list of collections the CMS should be able to edit
         required: false
         fields:
           - { label: Image, name: image, widget: image }
-          - { label: Caption, name: caption, widget: text, required: false }
+          - { label: Caption, name: caption, widget: text }
       - label: Additional Links
         name: additionalLinks
         widget: list
         fields:
           - { label: Title, name: title, widget: string }
-          - { label: Url, name: url, widget: string }
+          - { label: Url, name: url, widget: string, hint: "External links MUST begin with https://" }
 media_folder: "src/assets/uploads"
 public_folder: "/uploads"
 # site_url: https://your-site.com
