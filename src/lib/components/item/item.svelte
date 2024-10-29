@@ -1,12 +1,12 @@
 <script>
-	import { EnhancedImg } from '../img';
+	import { EnhancedImg } from '$lib/components/img';
 	/** @type {Item} */
 	let { title, path, description, thumbnail, additionalLinks, categories, year, date } = $props();
 </script>
 
 <div class="my-12 flex min-h-32">
 	<EnhancedImg src={thumbnail || '/uploads/favicon.png'} alt={`${title} thumbnail`} thumbnail />
-	<div class="grid-rows-auto ml-8 grid flex-grow">
+	<div class="grid-rows-auto ml-12 grid flex-grow">
 		<div class="flex justify-between">
 			<h3 class="mb-2 truncate text-2xl font-medium"><a href={path}>{title}</a></h3>
 			<p class="mb-2 text-2xl font-light text-neutral-500">

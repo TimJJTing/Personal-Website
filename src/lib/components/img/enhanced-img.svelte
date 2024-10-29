@@ -34,6 +34,11 @@
 </figure>
 
 <style>
+	.image {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
 	.thumbnail {
 		width: 128px;
 	}

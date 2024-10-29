@@ -3,5 +3,5 @@
 @import 'tailwindcss/utilities';
 
 article {
-	@apply prose md:prose-lg lg:prose-xl xl:prose-2xl prose-neutral dark:prose-invert;
+	@apply prose md:prose-lg prose-img:rounded-xl lg:prose-xl xl:prose-2xl prose-neutral dark:prose-invert max-w-none;
 }

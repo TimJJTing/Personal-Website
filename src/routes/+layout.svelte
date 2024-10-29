@@ -29,7 +29,10 @@
 	<meta property="twitter:description" content={description} />
 </svelte:head>
 
-<div id="root" class="container relative mx-auto h-full">
+<div
+	id="root"
+	class="container relative mx-auto h-full sm:px-8 md:px-12 lg:px-24 xl:px-48 2xl:px-64"
+>
 	<Nav>
 		<Links />
 	</Nav>
