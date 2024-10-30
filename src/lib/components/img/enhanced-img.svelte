@@ -19,27 +19,38 @@
 </script>
 
 <script>
-	/** @type {{src: string, alt: string, sizes?: string, thumbnail?: boolean}}*/
+	/** @type {{
+	 *   src: string,
+	 *   alt: string,
+	 *   sizes?: string,
+	 *   thumbnail?: boolean,
+	 *   caption?: string,
+	 *   [key: string]: any
+	 * }}
+	 * */
 	let {
 		src,
 		alt,
+		caption,
 		sizes = '(min-width:1920px) 1280px, (min-width:1080px) 640px, (min-width:768px) 400px',
-		thumbnail = false
+		thumbnail = false,
+		...restProps
 	} = $props();
 	const image = getImage(src);
 </script>
 
 <figure class="image" class:thumbnail>
-	<enhanced:img src={image} {alt} {sizes} />
+	<enhanced:img src={image} {alt} {sizes} {...restProps}/>
+	{#if caption}
+		<figcaption class="flex justify-center">{caption}</figcaption>
+	{/if}
 </figure>
 
 <style>
-	.image {
+	.thumbnail {
+		width: 128px;
 		display: flex;
 		justify-content: center;
 		align-items: center;
-	}
-	.thumbnail {
-		width: 128px;
 	}
 </style>

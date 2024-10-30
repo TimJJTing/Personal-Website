@@ -31,7 +31,7 @@
 
 <div
 	id="root"
-	class="container relative mx-auto h-full sm:px-8 md:px-12 lg:px-24 xl:px-48 2xl:px-64"
+	class="container relative mx-auto h-full px-4 sm:px-8 md:px-12 lg:px-24 xl:px-48 2xl:px-64"
 >
 	<Nav>
 		<Links />
