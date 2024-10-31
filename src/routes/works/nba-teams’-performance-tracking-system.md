@@ -52,7 +52,7 @@ WrRank      | A position based on winRate
 Name        | First name and last name of a player  
 Effi        | Efficiency of a player or a team on a particular season  
   
-Efficiency is calculated by using this formula: `( pts * 100 ) / ( ( fta * 0.44 ) + fga + to – oreb )`. The formula is taken from http://www.databasebasketball.com/about/aboutstats.htm and is computed on a per season basis.
+Efficiency is calculated by using this formula: `( pts * 100 ) / ( ( fta * 0.44 ) + fga + to – oreb )`. The formula is taken from [databasebasketball.com](http://www.databasebasketball.com/about/aboutstats.htm) and is computed on a per season basis.
 
 ## User Tasks
 Talking about user tasks, a question the come in to our mind was what every user would want to be fully aware of through the observation. The following is the list that we believe that users expect to able to accomplish after using our work:
