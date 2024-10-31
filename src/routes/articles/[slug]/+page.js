@@ -1,5 +1,8 @@
 import { error } from '@sveltejs/kit';
 
+// TODO
+export const prerender = false;
+
 /** @type {import('./$types').PageLoad} */
 export async function load({ params }) {
 	try {
