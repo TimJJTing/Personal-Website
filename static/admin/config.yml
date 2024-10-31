@@ -103,6 +103,10 @@ collections: # A list of collections the CMS should be able to edit
         widget: image
         hint: "Thumbnail image of the work."
         required: false
+      - label: Banner Image
+        name: banner
+        widget: image
+        hint: "If specified, it will be used as the banner of the article."
       - label: Images
         name: images
         widget: list
@@ -114,6 +118,7 @@ collections: # A list of collections the CMS should be able to edit
       - label: Additional Links
         name: additionalLinks
         widget: list
+        required: false
         fields:
           - { label: Title, name: title, widget: string }
           - { label: Url, name: url, widget: string }
@@ -155,6 +160,11 @@ collections: # A list of collections the CMS should be able to edit
         widget: image
         hint: "Thumbnail image of the work."
         required: false
+      - label: Banner Image
+        name: banner
+        widget: image
+        hint: "If specified, it will be used as the banner of the article."
+        required: false
       - label: Images
         name: images
         widget: list
@@ -166,9 +176,15 @@ collections: # A list of collections the CMS should be able to edit
       - label: Additional Links
         name: additionalLinks
         widget: list
+        required: false
         fields:
           - { label: Title, name: title, widget: string }
-          - { label: Url, name: url, widget: string, hint: "External links MUST begin with https://" }
+          - {
+              label: Url,
+              name: url,
+              widget: string,
+              hint: "External links MUST begin with https://",
+            }
 media_folder: "src/assets/uploads"
 public_folder: "/uploads"
 # site_url: https://your-site.com

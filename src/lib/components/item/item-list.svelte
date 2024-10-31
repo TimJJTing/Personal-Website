@@ -7,7 +7,9 @@
 	let filteredItems = $derived(items);
 </script>
 
-<h2 class="my-6 text-4xl font-bold">{title}</h2>
-{#each filteredItems as item, idx (idx)}
-	<Item {...item} />
-{/each}
+{#if filteredItems.length > 0}
+	<h2 class="my-6 text-4xl font-bold">{title}</h2>
+	{#each filteredItems as item, idx (idx)}
+		<Item {...item} />
+	{/each}
+{/if}

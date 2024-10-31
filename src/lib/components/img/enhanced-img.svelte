@@ -39,8 +39,8 @@
 	const image = getImage(src);
 </script>
 
-<figure class="image" class:thumbnail>
-	<enhanced:img src={image} {alt} {sizes} {...restProps}/>
+<figure class:thumbnail class="image py-2">
+	<enhanced:img src={image} {alt} {sizes} {...restProps} />
 	{#if caption}
 		<figcaption class="flex justify-center">{caption}</figcaption>
 	{/if}
@@ -48,9 +48,10 @@
 
 <style>
 	.thumbnail {
+		min-width: 128px;
 		width: 128px;
 		display: flex;
 		justify-content: center;
-		align-items: center;
+		align-items: start;
 	}
 </style>

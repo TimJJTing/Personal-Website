@@ -8,8 +8,8 @@
 - [x] Image enhancer
 - [x] Add / configure CMS
 - [x] Deploy onto Netlify
-- [ ] Enrich contents
-- [ ] UI/UX improvement
+- [x] Enrich contents
+- [x] UI/UX improvement
 - [ ] Syntax highlighter for codeblocks
 - [ ] Mermaid JS support
 - [ ] LaTex support

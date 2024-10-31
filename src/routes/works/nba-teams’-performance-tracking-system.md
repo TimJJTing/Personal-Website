@@ -10,6 +10,7 @@ categories:
   - frontend
 published: true
 thumbnail: /uploads/nba-pts-2.png
+banner: /uploads/nba-pts-2.png
 images:
   - image: /uploads/nba-pts-2.png
     caption: Fig. 1 - Interface
