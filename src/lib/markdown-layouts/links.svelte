@@ -6,7 +6,7 @@
 	let isResume = $derived($page.url.pathname === '/about');
 </script>
 
-<ul class="my-4 flex flex-nowrap justify-end gap-4 text-xl font-medium text-neutral-300">
+<ul class="my-4 flex flex-nowrap justify-between sm:justify-end gap-4 text-xl font-medium text-neutral-300">
 	{#if !isRoot}
 		<li>
 			<a href="/">
