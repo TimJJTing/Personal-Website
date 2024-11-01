@@ -1,7 +1,7 @@
 ---
 layout: _
 title: Task Lineage Generator
-description: TA simple Task Lineage Diagram Generator
+description: A simple task lineage diagram generator
 year: 2022
 categories:
   - d3.js
