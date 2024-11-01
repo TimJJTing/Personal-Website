@@ -1,7 +1,7 @@
 ---
 layout: work
 title: YouBike Route Explorer - Exploring the Future of Urban Mobility in Taipei
-description: YouBike Routes Visualized
+description: YouBike routes visualized
 year: 2024
 categories:
   - h3
@@ -20,7 +20,8 @@ images:
   - image: /uploads/youbike-2.png
     caption: Fig. 2 - All reachable routes from a station.
   - image: /uploads/youbike-3.png
-    caption: Fig. 3 - Data is also aggregated for every H3 grid since nearby stations are often interchangeable to users. 
+    caption: Fig. 3 - Data is also aggregated for every H3 grid since nearby
+      stations are often interchangeable to users.
 additionalLinks:
   - title: Demo
     url: https://youbike-route-explorer.netlify.app/
