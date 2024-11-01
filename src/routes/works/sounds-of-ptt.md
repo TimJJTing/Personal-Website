@@ -6,7 +6,7 @@ year: 2018
 categories:
   - nlp
   - dsp
-  - sonification
+  - data sonification
   - vue
   - docker
   - django
