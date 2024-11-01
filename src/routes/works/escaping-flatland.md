@@ -1,14 +1,15 @@
 ---
 layout: _
 title: Escaping Flatland
-description: Optimization techniques for plotting large datasets in a 3D space using Three.js + Svelte integration
+description: Optimization techniques for plotting large datasets in a 3D space
+  using Three.js + Svelte integration
 year: 2024
 categories:
   - big-data
   - octree
   - svelte
   - sveltekit
-  - data-visualization
+  - data visualization
   - lod
   - three.js
   - glsl-shaders
