@@ -1,7 +1,18 @@
 <script>
 	import { EnhancedImg } from '$lib/components/img';
 	/** @type {Item} */
-	let { title, path, description, thumbnail, banner, additionalLinks, categories, year, date } = $props();
+	let {
+		title,
+		path,
+		description,
+		thumbnail,
+		banner,
+		additionalLinks,
+		slides,
+		categories,
+		year,
+		date
+	} = $props();
 </script>
 
 <div class="my-12 flex min-h-32">
@@ -31,6 +42,9 @@
 		{/if} -->
 		<p class="text-neutral-200">{description}</p>
 		<div class="flex flex-row gap-4 self-end font-light text-neutral-400">
+			{#if slides}
+				<span class="hidden md:inline"><a href={slides} target="_blank">Slides</a></span>
+			{/if}
 			{#if additionalLinks}
 				{#each additionalLinks as { title, url }, i (url)}
 					<span class="hidden md:inline"><a href={url} target="_blank">{title}</a></span>
