@@ -1,3 +1,5 @@
+import remarkFootnotes from "remark-footnotes";
+
 const config = {
 	extensions: ['.md', '.svx'],
 
@@ -10,7 +12,7 @@ const config = {
 		work: './src/lib/markdown-layouts/work.svelte',
 		_: './src/lib/markdown-layouts/default.svelte'
 	},
-	remarkPlugins: [],
+	remarkPlugins: [remarkFootnotes],
 	rehypePlugins: []
 };
 

@@ -173,6 +173,11 @@ collections: # A list of collections the CMS should be able to edit
         fields:
           - { label: Image, name: image, widget: image }
           - { label: Caption, name: caption, widget: text }
+      - label: Slides
+        name: slides
+        widget: string
+        required: false
+        hint: "A link to the slides, if there are. Links MUST begin with https://"
       - label: Additional Links
         name: additionalLinks
         widget: list

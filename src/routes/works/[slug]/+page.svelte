@@ -17,7 +17,7 @@
 				/>
 			{/if}
 
-			<h1>{data.meta.title}</h1>
+			<h1 class="mt-8">{data.meta.title}</h1>
 
 			{#if data.meta.categories}
 				<TagList tags={data.meta.categories} />

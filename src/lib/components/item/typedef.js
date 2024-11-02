@@ -6,6 +6,7 @@
  *   thumbnail: string | undefined
  *   banner: string | undefined
  *   images: {image: string, caption: string}[] | undefined | null
+ *   slides: string | undefined
  *   additionalLinks: {title: string, url: string}[] | undefined | null
  *   categories: string[] | undefined | null
  *   year: number | undefined

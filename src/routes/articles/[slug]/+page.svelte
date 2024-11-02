@@ -17,7 +17,7 @@
 				/>
 			{/if}
 			
-			<h1>{data.meta.title}</h1>
+			<h1 class="mt-8">{data.meta.title}</h1>
 
 			{#if data.meta.categories}
 				<TagList tags={data.meta.categories} />
@@ -27,6 +27,15 @@
 				{#each data.meta.images as { image, caption }, i (i)}
 					<EnhancedImg src={image} alt={caption} {caption} loading="lazy" />
 				{/each}
+			{/if}
+
+			{#if data.meta.slides}
+				<h2>Slides</h2>
+				<ul>
+					<li>
+						<a href={data.meta.slides} target="_blank">See Slides...</a>
+					</li>
+				</ul>
 			{/if}
 
 			{#if data.meta.additionalLinks}
