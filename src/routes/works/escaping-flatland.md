@@ -28,6 +28,8 @@ additionalLinks:
     title: Demo
   - url: https://github.com/TimJJTing/Escaping-Flatland
     title: Source
+  - title: Slides
+    url: https://timjjting.github.io/Escaping-Flatland-Slides/
 ---
 
 > *Even though we navigate daily through a perceptual world of three dimensions… the world displayed on our information displays is caught up in the two dimensionality of the endless flatlands of paper and video screens… Escaping this flatland is the essential task of envisioning information — for all the interesting worlds that we seek to understand are inevitably and happily multivariate in nature. Not flatlands. (Tufte 1990)*
