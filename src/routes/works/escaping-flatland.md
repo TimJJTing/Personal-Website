@@ -41,3 +41,7 @@ This project demonstrates optimization techniques for plotting large datasets in
 ## Live Demo
 
 Try [the live demo](https://escaping-flatland.netlify.app)!
+
+## Slides
+
+Watch the [slides](https://timjjting.github.io/Escaping-Flatland-Slides/) to see the techniques behind the project
