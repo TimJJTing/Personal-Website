@@ -57,7 +57,7 @@ collections: # A list of collections the CMS should be able to edit
           default: _,
         }
       - { label: "Title", name: title, widget: string, default: About }
-      - { label: Photo, name: photo, widget: image }
+      - { label: Photo, name: photo, widget: image, required: false }
       - { label: "Content", name: body, widget: markdown }
   - name: "works" # Used in routes, ie.: /admin/collections/:slug/edit
     label: "Work" # Used in the UI, ie.: "New Post"

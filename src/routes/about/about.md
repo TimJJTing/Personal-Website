@@ -5,7 +5,7 @@ title: Jie-Ting Jiang
 
 ## Summary
 
-Senior BI engineer with expertise in designing scalable, data-driven solutions that empower decision-making through advanced visualization and business intelligence tools. Proven ability to collaborate with data scientists and data engineers to deliver data-intensive applications, enhancing operational efficiency and decision-making for C-suite executives and 30+ departments. Proficient in Python, JavaScript, SQL, Django, React, Svelte, Deck.gl, D3.js, Three.js, Docker, and Kubernetes.
+Senior Frontend Engineer with a strong focus on designing intuitive, visual, and data-driven applications that empower users through seamless interaction and advanced visualizations. Skilled in modern JavaScript frameworks, data visualization libraries, and creating highly performant, responsive applications. Proven ability to collaborate effectively with designers, data scientists, and engineers to build impactful solutions aligned with user needs and business goals. Proficient in JavaScript, Svelte, React, Three.js, D3.js, and backend development with Python and Django, with extensive knowledge of Docker and Kubernetes for deployment efficiency.
 
 ## Experience
 
