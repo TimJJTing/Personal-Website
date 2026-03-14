@@ -1,0 +1,23 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Disallow:
+
+Sitemap: https://jtingjiang.com/sitemap.xml
+
+# LLM-friendly content
+# See https://llmstxt.org/ for more information
+User-agent: GPTBot
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+User-agent: ChatGPT-User
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+User-agent: Claude-Web
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+User-agent: Anthropic-AI
+Allow: /llms.txt
+Allow: /llms-full.txt

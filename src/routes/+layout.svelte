@@ -15,6 +15,7 @@
 	<title>{title}</title>
 	<!--  Essential META Tags -->
 	<meta name="description" content={description} />
+	<link rel="canonical" href={$page.url.toString()} />
 
 	<!--  Open Graph META Tags -->
 	<meta property="og:title" content={title} />
@@ -27,11 +28,45 @@
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content={title} />
 	<meta property="twitter:description" content={description} />
+
+	<!--  Structured Data (JSON-LD) -->
+	{@html `<script type="application/ld+json">${JSON.stringify({
+		'@context': 'https://schema.org',
+		'@type': 'Person',
+		name: 'Jie-Ting Jiang',
+		url: 'https://jtingjiang.com',
+		jobTitle: 'Senior Business Intelligence Engineer',
+		worksFor: {
+			'@type': 'Organization',
+			name: 'Gogoro'
+		},
+		sameAs: ['https://www.linkedin.com/in/jie-ting-jiang/', 'https://github.com/TimJJTing'],
+		knowsAbout: [
+			'Data Visualization',
+			'Frontend Engineering',
+			'Three.js',
+			'D3.js',
+			'Svelte',
+			'React',
+			'Business Intelligence',
+			'Geospatial Analysis'
+		],
+		alumniOf: [
+			{
+				'@type': 'CollegeOrUniversity',
+				name: 'Johannes Kepler Universität Linz'
+			},
+			{
+				'@type': 'CollegeOrUniversity',
+				name: 'National Sun Yat-Sen University'
+			}
+		]
+	})}</script>`}
 </svelte:head>
 
 <div
 	id="root"
-	class="container relative mx-auto h-full px-6 sm:px-8 md:px-12 lg:px-24 xl:px-48 2xl:px-64"
+	class="relative container mx-auto h-full px-6 sm:px-8 md:px-12 lg:px-24 xl:px-48 2xl:px-64"
 >
 	<Nav>
 		<Links />
