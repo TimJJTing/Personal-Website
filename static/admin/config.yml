@@ -157,7 +157,7 @@ collections: # A list of collections the CMS should be able to edit
               widget: string,
               hint: 'External links MUST begin with https://'
             }
-media_folder: 'src/uploads'
+media_folder: 'static/uploads'
 public_folder: '/uploads'
 # site_url: https://your-site.com
 # display_url: https://your-site.com
