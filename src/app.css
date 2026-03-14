@@ -3,8 +3,10 @@
 @plugin '@tailwindcss/typography';
 @plugin '@tailwindcss/container-queries';
 
+@custom-variant dark (&:is(.dark *));
+
 article {
-	@apply prose md:prose-lg prose-img:rounded-xl lg:prose-xl xl:prose-2xl prose-neutral dark:prose-invert max-w-none;
+	@apply prose md:prose-lg prose-img:rounded-xl prose-figure:mx-auto lg:prose-xl xl:prose-2xl prose-neutral dark:prose-invert max-w-none;
 }
 
 /*
@@ -30,7 +32,8 @@ a {
 	@apply hover:underline;
 }
 
-p, li {
+p,
+li {
 	@apply text-lg;
 }
 

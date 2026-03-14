@@ -22,7 +22,7 @@
 		thumbnail
 		class="rounded-xl"
 	/>
-	<div class="grid-rows-auto ml-6 grid flex-grow gap-2 md:ml-8 lg:ml-12">
+	<div class="grid-rows-auto ml-6 grid grow gap-2 md:ml-8 lg:ml-12">
 		<div class="flex flex-col md:flex-row md:justify-between">
 			<h3 class="mb-2 text-xl font-medium md:text-2xl"><a href={path}>{title}</a></h3>
 			<p class="mb-2 text-sm font-light text-neutral-500 md:text-2xl">

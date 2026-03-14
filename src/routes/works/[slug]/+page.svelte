@@ -19,12 +19,7 @@
 	<section>
 		<article>
 			{#if banner}
-				<NetlifyEnhancedImg
-					src={banner}
-					alt={`${title} banner`}
-					fetchpriority="high"
-					loading="eager"
-				/>
+				<NetlifyEnhancedImg src={banner} alt={`${title} banner`} loading="eager" />
 			{/if}
 
 			<h1 class="mt-8">{title}</h1>
@@ -32,11 +27,11 @@
 			{#if categories}
 				<TagList tags={categories} />
 			{/if}
-			
+
 			<Content />
 			{#if images}
 				{#each images as { image, caption }, i (i)}
-					<NetlifyEnhancedImg src={image} alt={caption} {caption} loading="lazy"/>
+					<NetlifyEnhancedImg src={image} alt={caption} {caption} loading="lazy" />
 				{/each}
 			{/if}
 

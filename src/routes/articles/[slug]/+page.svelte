@@ -21,14 +21,9 @@
 	<section>
 		<article>
 			{#if banner}
-				<NetlifyEnhancedImg
-					src={banner}
-					alt={`${title} banner`}
-					fetchpriority="high"
-					loading="eager"
-				/>
+				<NetlifyEnhancedImg src={banner} alt={`${title} banner`} loading="eager" />
 			{/if}
-			
+
 			<h1 class="mt-8">{title}</h1>
 
 			{#if categories}

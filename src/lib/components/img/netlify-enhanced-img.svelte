@@ -21,7 +21,7 @@
 		src,
 		alt,
 		caption,
-		sizes = '(min-width:1920px) 1280px, (min-width:1080px) 640px, (min-width:768px) 400px',
+		sizes = '(min-width:1920px) 1280px, (min-width:1280px) 960px, (min-width:1024px) 768px, (min-width:768px) 640px, 100vw',
 		quality = 85,
 		thumbnail = false,
 		disablePadding = false,
@@ -90,6 +90,16 @@
 </figure>
 
 <style>
+	.image {
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	.image:not(.thumbnail) img {
+		width: 100%;
+		height: auto;
+	}
+
 	.thumbnail {
 		min-width: 128px;
 		width: 128px;
