@@ -1,43 +1,32 @@
 # yaml-language-server: $schema=https://unpkg.com/@sveltia/cms/schema/sveltia-cms.json
 backend:
   name: github
-  repo: TimJJTing/personal-website
+  repo: TimJJTing/Personal-Website
   branch: main
 collections: # A list of collections the CMS should be able to edit
-  - name: "setting"
-    label: "Site Settings"
+  - name: 'setting'
+    label: 'Site Settings'
     files:
-      - name: "configuration"
-        label: "Configuration"
-        file: "src/routes/config.md"
+      - name: 'configuration'
+        label: 'Configuration'
+        file: 'src/routes/config.md'
         delete: false
         fields:
-          - {
-              label: "Site name",
-              name: title,
-              widget: string,
-              default: "My website",
-            }
+          - { label: 'Site name', name: title, widget: string, default: 'My website' }
           - {
               label: Description,
               name: description,
               widget: string,
-              default: "this is my personal website",
+              default: 'this is my personal website'
             }
-          - { label: Url, name: url, widget: string, hint: "Site Url" }
+          - { label: Url, name: url, widget: string, hint: 'Site Url' }
       # links
-      - name: "links"
-        label: "External Links"
-        file: "src/routes/links.md"
+      - name: 'links'
+        label: 'External Links'
+        file: 'src/routes/links.md'
         delete: false
         fields:
-          - {
-              label: "Layout",
-              name: layout,
-              widget: hidden,
-              hint: "DO NOT CHANGE",
-              default: links,
-            }
+          - { label: 'Layout', name: layout, widget: hidden, hint: 'DO NOT CHANGE', default: links }
           - label: Links
             name: links
             widget: list
@@ -45,74 +34,56 @@ collections: # A list of collections the CMS should be able to edit
               - { label: Title, name: title, widget: string }
               - { label: Url, name: url, widget: string }
   # cv
-  - name: "about"
-    label: "About Page"
-    folder: "src/routes/about"
+  - name: 'about'
+    label: 'About Page'
+    folder: 'src/routes/about'
     create: true
     delete: true
     fields:
-      - {
-          label: "Layout",
-          name: layout,
-          widget: hidden,
-          hint: "DO NOT CHANGE",
-          default: _,
-        }
-      - { label: "Title", name: title, widget: string, default: About }
+      - { label: 'Layout', name: layout, widget: hidden, hint: 'DO NOT CHANGE', default: _ }
+      - { label: 'Title', name: title, widget: string, default: About }
       - { label: Photo, name: photo, widget: image, required: false }
-      - { label: "Content", name: body, widget: markdown }
-  - name: "works" # Used in routes, ie.: /admin/collections/:slug/edit
-    label: "Work" # Used in the UI, ie.: "New Post"
-    folder: "src/routes/works" # The path to the folder where the documents are stored
+      - { label: 'Content', name: body, widget: markdown }
+  - name: 'works' # Used in routes, ie.: /admin/collections/:slug/edit
+    label: 'Work' # Used in the UI, ie.: "New Post"
+    folder: 'src/routes/works' # The path to the folder where the documents are stored
     create: true # Allow users to create new documents in this collection
     fields: # The fields each document in this collection have
+      - { label: 'Layout', name: layout, widget: hidden, hint: 'DO NOT CHANGE', default: _ }
+      - { label: 'Title', name: 'title', widget: 'string' }
       - {
-          label: "Layout",
-          name: layout,
-          widget: hidden,
-          hint: "DO NOT CHANGE",
-          default: _,
+          label: 'Description',
+          name: 'description',
+          widget: 'string',
+          hint: 'A short description.'
         }
-      - { label: "Title", name: "title", widget: "string" }
-      - {
-          label: "Description",
-          name: "description",
-          widget: "string",
-          hint: "A short description.",
-        }
-      - {
-          label: "Year",
-          name: "year",
-          widget: "number",
-          value_type: "int",
-          min: 1970,
-        }
+      - { label: 'Year', name: 'year', widget: 'number', value_type: 'int', min: 1970 }
       - label: Categories
         name: categories
         widget: list
-        hint: "work categories"
+        hint: 'work categories'
         required: false
       - {
-          label: "Publish",
-          name: "published",
-          widget: "boolean",
+          label: 'Publish',
+          name: 'published',
+          widget: 'boolean',
           default: true,
-          hint: "Set to false will not publish this work.",
+          hint: 'Set to false will not publish this work.'
         }
-      - { label: "Body", name: "body", widget: "markdown" }
+      - { label: 'Body', name: 'body', widget: 'markdown' }
       - label: Thumbnail
         name: thumbnail
         widget: image
-        hint: "Thumbnail image of the work."
+        hint: 'Thumbnail image of the work.'
         required: false
       - label: Banner Image
         name: banner
         widget: image
-        hint: "If specified, it will be used as the banner of the article."
+        hint: 'If specified, it will be used as the banner of the article.'
       - label: Images
         name: images
         widget: list
-        hint: "Additional images of the work."
+        hint: 'Additional images of the work.'
         required: false
         fields:
           - { label: Image, name: image, widget: image }
@@ -124,53 +95,47 @@ collections: # A list of collections the CMS should be able to edit
         fields:
           - { label: Title, name: title, widget: string }
           - { label: Url, name: url, widget: string }
-  - name: "blog" # Used in routes, ie.: /admin/collections/:slug/edit
-    label: "Blog" # Used in the UI, ie.: "New Post"
-    folder: "src/routes/articles" # The path to the folder where the documents are stored
+  - name: 'blog' # Used in routes, ie.: /admin/collections/:slug/edit
+    label: 'Blog' # Used in the UI, ie.: "New Post"
+    folder: 'src/routes/articles' # The path to the folder where the documents are stored
     create: true # Allow users to create new documents in this collection
     fields: # The fields each document in this collection have
+      - { label: 'Layout', name: layout, widget: hidden, hint: 'DO NOT CHANGE', default: _ }
+      - { label: 'Title', name: 'title', widget: 'string' }
       - {
-          label: "Layout",
-          name: layout,
-          widget: hidden,
-          hint: "DO NOT CHANGE",
-          default: _,
+          label: 'Description',
+          name: 'description',
+          widget: 'string',
+          hint: 'A short description.'
         }
-      - { label: "Title", name: "title", widget: "string" }
-      - {
-          label: "Description",
-          name: "description",
-          widget: "string",
-          hint: "A short description.",
-        }
-      - { label: "Date", name: "date", widget: "datetime", default: "{{now}}" }
+      - { label: 'Date', name: 'date', widget: 'datetime', default: '{{now}}' }
       - label: Categories
         name: categories
         widget: list
-        hint: "article categories"
+        hint: 'article categories'
         required: false
       - {
-          label: "Publish",
-          name: "published",
-          widget: "boolean",
+          label: 'Publish',
+          name: 'published',
+          widget: 'boolean',
           default: true,
-          hint: "Set to false will not publish this article.",
+          hint: 'Set to false will not publish this article.'
         }
-      - { label: "Body", name: "body", widget: "markdown" }
+      - { label: 'Body', name: 'body', widget: 'markdown' }
       - label: Thumbnail
         name: thumbnail
         widget: image
-        hint: "Thumbnail image of the work."
+        hint: 'Thumbnail image of the work.'
         required: false
       - label: Banner Image
         name: banner
         widget: image
-        hint: "If specified, it will be used as the banner of the article."
+        hint: 'If specified, it will be used as the banner of the article.'
         required: false
       - label: Images
         name: images
         widget: list
-        hint: "Additional images of the article."
+        hint: 'Additional images of the article.'
         required: false
         fields:
           - { label: Image, name: image, widget: image }
@@ -179,7 +144,7 @@ collections: # A list of collections the CMS should be able to edit
         name: slides
         widget: string
         required: false
-        hint: "A link to the slides, if there are. Links MUST begin with https://"
+        hint: 'A link to the slides, if there are. Links MUST begin with https://'
       - label: Additional Links
         name: additionalLinks
         widget: list
@@ -190,10 +155,10 @@ collections: # A list of collections the CMS should be able to edit
               label: Url,
               name: url,
               widget: string,
-              hint: "External links MUST begin with https://",
+              hint: 'External links MUST begin with https://'
             }
-media_folder: "src/uploads"
-public_folder: "/uploads"
+media_folder: 'src/uploads'
+public_folder: '/uploads'
 # site_url: https://your-site.com
 # display_url: https://your-site.com
 # logo_url: https://your-site.com/images/logo.svg
