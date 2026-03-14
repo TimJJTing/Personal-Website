@@ -17,14 +17,19 @@ const config = {
 			// if `edge` is true, this option cannot be used
 			split: false
 		}),
-		// prerender: {
-		// 	crawl: true,
-		// 	entries: ['*']
-		// }
-		// Override http methods in the Todo forms
-		// methodOverride: {
-		// 	allowed: ['PATCH', 'DELETE']
-		// }
+		prerender: {
+			crawl: true,
+			entries: ['*'],
+			handleHttpError: ({ path, referrer, message }) => {
+				// Ignore Netlify Image CDN URLs during prerendering
+				// These only work on Netlify's CDN, not locally
+				if (path.startsWith('/.netlify/images')) {
+					return;
+				}
+				// For other errors, throw as usual
+				throw new Error(message);
+			}
+		}
 	},
 	extensions: ['.svelte', ...mdsvexConfig.extensions],
 	preprocess: [vitePreprocess(), mdsvex(mdsvexConfig)]

@@ -1,5 +1,7 @@
+# yaml-language-server: $schema=https://unpkg.com/@sveltia/cms/schema/sveltia-cms.json
 backend:
-  name: git-gateway
+  name: github
+  repo: TimJJTing/personal-website
   branch: main
 collections: # A list of collections the CMS should be able to edit
   - name: "setting"
@@ -190,7 +192,7 @@ collections: # A list of collections the CMS should be able to edit
               widget: string,
               hint: "External links MUST begin with https://",
             }
-media_folder: "src/assets/uploads"
+media_folder: "src/uploads"
 public_folder: "/uploads"
 # site_url: https://your-site.com
 # display_url: https://your-site.com

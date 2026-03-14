@@ -1,5 +1,5 @@
 <script>
-	import { EnhancedImg } from '$lib/components/img';
+	import { NetlifyEnhancedImg } from '$lib/components/img';
 	/** @type {Item} */
 	let {
 		title,
@@ -16,7 +16,7 @@
 </script>
 
 <div class="my-12 flex min-h-32">
-	<EnhancedImg
+	<NetlifyEnhancedImg
 		src={thumbnail || banner || '/uploads/favicon.png'}
 		alt={`${title} thumbnail`}
 		thumbnail

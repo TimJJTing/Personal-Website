@@ -1,47 +1,59 @@
 <script>
-	import { EnhancedImg } from '$lib/components/img';
+	import { NetlifyEnhancedImg } from '$lib/components/img';
 	import { TagList } from '$lib/components/tag';
+	/**
+	 * @typedef {Object} Props
+	 * @property {import('./$types').PageData} data
+	 */
+
+	/** @type {Props} */
 	let { data } = $props();
-	let Content = data.content;
+	let Content = $derived(data.content);
+	let banner = $derived(data.meta.banner);
+	let title = $derived(data.meta.title);
+	let categories = $derived(data.meta.categories);
+	let images = $derived(data.meta.images);
+	let slides = $derived(data.meta.slides);
+	let additionalLinks = $derived(data.meta.additionalLinks);
 </script>
 
 <main>
 	<section>
 		<article>
-			{#if data.meta.banner}
-				<EnhancedImg
-					src={data.meta.banner}
-					alt={`${data.meta.title} banner`}
+			{#if banner}
+				<NetlifyEnhancedImg
+					src={banner}
+					alt={`${title} banner`}
 					fetchpriority="high"
 					loading="eager"
 				/>
 			{/if}
 			
-			<h1 class="mt-8">{data.meta.title}</h1>
+			<h1 class="mt-8">{title}</h1>
 
-			{#if data.meta.categories}
-				<TagList tags={data.meta.categories} />
+			{#if categories}
+				<TagList tags={categories} />
 			{/if}
 			<Content />
-			{#if data.meta.images}
-				{#each data.meta.images as { image, caption }, i (i)}
-					<EnhancedImg src={image} alt={caption} {caption} loading="lazy" />
+			{#if images}
+				{#each images as { image, caption }, i (i)}
+					<NetlifyEnhancedImg src={image} alt={caption} {caption} loading="lazy" />
 				{/each}
 			{/if}
 
-			{#if data.meta.slides}
+			{#if slides}
 				<h2>Slides</h2>
 				<ul>
 					<li>
-						<a href={data.meta.slides} target="_blank">See Slides...</a>
+						<a href={slides} target="_blank">See Slides...</a>
 					</li>
 				</ul>
 			{/if}
 
-			{#if data.meta.additionalLinks}
+			{#if additionalLinks}
 				<h2>Further Reading</h2>
 				<ul>
-					{#each data.meta.additionalLinks as { url, title }, i (i)}
+					{#each additionalLinks as { url, title }, i (i)}
 						<li>
 							<a href={url} target="_blank">{title}</a>
 						</li>

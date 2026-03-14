@@ -1,1 +1,1 @@
-export { default as EnhancedImg } from './enhanced-img.svelte';
+export { default as NetlifyEnhancedImg } from './netlify-enhanced-img.svelte';

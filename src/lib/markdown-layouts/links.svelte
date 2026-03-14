@@ -1,7 +1,7 @@
 <script>
 	import { page } from '$app/stores';
 	/** @type {{ links: {title: string, url: string}[] }} */
-	let { links } = $props();
+	let { links = [] } = $props();
 	let isRoot = $derived($page.url.pathname === '/');
 	let isResume = $derived($page.url.pathname === '/about');
 </script>

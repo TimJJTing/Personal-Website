@@ -2,8 +2,6 @@
 
 Senior Full-stack Engineer with a strong focus on designing intuitive, visual, and data-driven applications that empower users through seamless interaction and advanced visualizations. Skilled in modern JavaScript frameworks, data visualization libraries, and creating highly performant, responsive applications. Proven ability to collaborate effectively with designers, data scientists, and engineers to build impactful solutions aligned with user needs and business goals. Proficient in JavaScript, Svelte, React, Three.js, D3.js, and CSS, with extensive knowledge of Docker and Kubernetes for deployment efficiency.
 
----
-
 ## Experience
 
 ### Senior Business Intelligence Engineer
@@ -33,8 +31,6 @@ Taipei, Taiwan
 - Reduced location assessment time for new deployments by creating a real-time geospatial analysis tool, cutting assessment time by 95% and enhancing decision accuracy.
 - Refactored a monolithic application into modular, frontend-driven microservices with custom API integrations, increasing flexibility, testing speed, and maintainability of critical data-driven tools.
 
----
-
 ## Education
 
 **Master of Science in Informatics**  
@@ -54,8 +50,6 @@ National Sun Yat-Sen University
 Kaohsiung, Taiwan  
 **2010 - 2014**
 
----
-
 ## Skills
 
 - **Frontend Development:** JavaScript, Svelte, React, CSS, HTML
@@ -63,8 +57,6 @@ Kaohsiung, Taiwan
 - **Data Visualization:** Three.js, D3.js, Deck.gl, Google Maps JS API, Mapbox GL JS
 - **DevOps:** GitLab CI, Docker, Kubernetes
 - **Languages:** English (Full Professional Proficiency), Chinese (Native), Taiwanese (Native), Deutsch (Niveau B1)
-
----
 
 ## Interests/Hobbies
 User experience design, Infographics, Visual Journalism, New Media Arts, Specialty Coffee
