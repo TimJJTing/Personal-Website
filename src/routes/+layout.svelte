@@ -3,6 +3,7 @@
 	import { Nav } from '$lib/components/nav';
 	import { Footer } from '$lib/components/footer';
 	import '../app.css';
+	// @ts-expect-error TS can't resolve .md module imports in Svelte files
 	import Links from './links.md';
 	let { children, data: layoutData } = $props();
 	//  if page has a title, use it, otherwise fallback to the site title

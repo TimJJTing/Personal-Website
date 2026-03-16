@@ -5,6 +5,7 @@ export const prerender = true;
 /** @type {import('./$types').LayoutLoad} */
 export async function load() {
 	try {
+		// @ts-expect-error TS can't resolve dynamic template literal imports for .md files
 		const config = await import(`./config.md`);
 		return {
 			meta: config.metadata

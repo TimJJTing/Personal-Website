@@ -13,6 +13,8 @@
 	 * @property {boolean} [disablePadding] - If `true`, removes the default vertical padding. Defaults to `false`.
 	 * @property {number} [width] - The intrinsic width of the image in pixels. Used for aspect-ratio to prevent CLS.
 	 * @property {number} [height] - The intrinsic height of the image in pixels. Used for aspect-ratio to prevent CLS.
+	 * @property {string} [class] - Optional CSS class for the wrapper.
+	 * @property {"lazy" | "eager"} [loading] - Image loading strategy.
 	 * @property {any} [key] - Additional attributes passed to the underlying image element.
 	 */
 
@@ -27,6 +29,8 @@
 		disablePadding = false,
 		width = undefined,
 		height = undefined,
+		class: className = undefined,
+		loading = "lazy",
 		...restProps
 	} = $props();
 
@@ -65,7 +69,7 @@
 
 <figure
 	class:thumbnail
-	class="image"
+	class="image {className || ''}"
 	class:py-2={!disablePadding}
 	class:m-0={disablePadding}
 	class:h-full={disablePadding}
@@ -80,7 +84,7 @@
 		{width}
 		{height}
 		style={aspectRatioStyle}
-		loading="lazy"
+		{loading}
 		decoding="async"
 		{...restProps}
 	/>

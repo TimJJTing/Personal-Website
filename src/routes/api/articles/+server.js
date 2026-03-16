@@ -7,14 +7,15 @@ async function getArticles() {
 		);
 		const articles = modules
 			.map(([file, module]) => {
+				const { metadata } = /** @type {{ metadata: ItemMetadata }} */ (module);
 				const path = file.replace('/src/routes/', '/').replace('index', '').replace('.md', '');
 				return {
 					path,
-					...module?.metadata
+					...metadata
 				};
 			})
 			.filter((a) => a.published)
-			.sort((first, second) => new Date(second.date).getTime() - new Date(first.date).getTime());
+			.sort((first, second) => new Date(second.date ?? 0).getTime() - new Date(first.date ?? 0).getTime());
 
 		return articles;
 	} catch (e) {
