@@ -6,7 +6,6 @@ export async function load() {
 		// @ts-expect-error TS can't resolve dynamic template literal imports for .md files
 		const about = await import(`./about.md`);
 		return {
-			content: about.default,
 			meta: about.metadata
 		};
 	} catch (e) {
