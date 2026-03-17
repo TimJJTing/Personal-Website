@@ -19,7 +19,7 @@ const config = {
 		}),
 		prerender: {
 			crawl: true,
-			entries: ['*'],
+			entries: ['*', '/llms.txt', '/llms-full.txt'],
 			handleHttpError: ({ path, referrer, message }) => {
 				// Ignore Netlify Image CDN URLs during prerendering
 				// These only work on Netlify's CDN, not locally
