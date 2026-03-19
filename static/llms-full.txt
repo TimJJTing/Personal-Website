@@ -6,29 +6,40 @@
 
 ## Professional Summary
 
-Senior Frontend Engineer with a strong focus on designing intuitive, visual, and data-driven applications that empower users through seamless interaction and advanced visualizations. Skilled in modern JavaScript frameworks, data visualization libraries, and creating highly performant, responsive applications. Proven ability to collaborate effectively with designers, data scientists, and engineers to build impactful solutions aligned with user needs and business goals. Proficient in JavaScript, Svelte, React, Three.js, D3.js, and backend development with Python and Django, with extensive knowledge of Docker and Kubernetes for deployment efficiency.
+Full-stack engineer who turns complex data into tools people actually use. Over 6 years of building data visualization platforms, business intelligence systems, and internal tooling — from 3D exploration of million-record datasets to company-wide BI platforms serving 30+ departments. I architect end-to-end solutions (Python/Django APIs, React/Next.js/SvelteKit frontends, D3/Three.js visualizations) and care deeply about making data accessible to non-technical decision-makers. Currently exploring how AI-assisted workflows can fundamentally change how engineering teams ship data intensive solutions.
 
 ## Work Experience
 
+### Frontend Engineer
+**Pay Web Dev, Line Pay** — September 2025 to Present, Taipei, Taiwan
+
+#### Cross-Framework Migration & AI Tooling
+- Led full migration of the Insurance Platform from SvelteKit to Next.js; designed AI-powered code review workflows and spec-driven development processes that cut estimated migration effort by ~70%.
+- Introduced AI-assisted development practices (agents, MCPs, prompt workflows) across the engineering team, reducing repetitive tasks and accelerating feature delivery.
+
+#### Line Pay Finance Platform
+- Modernize and maintain the Finance Platform, improving long-term stability, performance, and developer experience across the stack.
+
 ### Senior Business Intelligence Engineer
-**Data Office, Gogoro** — July 2024 to Present, Taipei, Taiwan
+**Data Office, Gogoro** — October 2022 to August 2025, Taipei, Taiwan
 
-- Collaborated with data scientists to design and develop a 3D visual exploration tool using Three.js and Svelte for querying, filtering, and visualizing over 1 million customers, enabling data analysts and decision-makers to analyze and interpret user behaviors and clusters while optimizing performance for smooth operation on average computers despite data volumes.
-- Designed a standardized framework for building APIs for data-intensive applications in collaboration with data engineers, focusing on exploratory data analysis tools and decision science.
+#### Business Intelligence Platform & Data Visualization
+- Built and scaled a BI platform adopted by 30+ departments, making decision science accessible org-wide — from self-serve dashboards to advanced exploratory tools.
+- Designed a 3D customer exploration tool (Three.js + Svelte) for querying and visualizing 1M+ records, optimized to run smoothly on average hardware; built a parallel asset management app for 1M+ battery assets.
 
-### Business Intelligence Engineer
-**Data Office, Gogoro** — October 2022 to June 2024, Taipei, Taiwan
-
-- Led the development and expansion of a business intelligence platform hosting diverse topics used by 30+ departments, enabling streamlined access to critical data insights and making decision science accessible across the organization.
-- Designed and developed an asset management application supporting the querying, filtering, and visualization of over 1 million battery assets, enabling seamless access to asset states and improving decision-making efficiency.
-- Developed component libraries for user interfaces, charts, and maps in both React.js and Svelte, collaborating closely with designers to ensure alignment with the company's brand image, ensuring code reusability and accelerating application developments.
+#### Platform & Developer Experience
+- Designed a standardized API framework for data-intensive applications with data engineers, enabling rapid development of exploratory analysis and decision science tools.
+- Built shared component libraries (UI, charts, maps) in React and Svelte with designers, accelerating app development and ensuring visual consistency across the platform.
 
 ### Data Visualization Engineer
 **Network Excellence, Gogoro Network** — March 2019 to September 2022, Taipei, Taiwan
 
-- Led the design and development of full-stack data visualization solutions to enable executives to monitor company performance, including the status of over 2,500 GoStations, with regional and temporal aggregations at daily, weekly, and monthly levels.
-- Reduced the location assessment time for GoStation deployments by 95%, from days to seconds, by developing an automated geospatial analysis process in collaboration with data analysts.
-- Rearchitected a monolithic decision support system into a set of Python-based APIs and microservices, streamlining the integration of business logic from data scientists and analysts, which eliminated translation delays and enhanced flexibility in debugging, testing, deployment, and management.
+#### Executive Dashboards & Geospatial Analysis
+- Built full-stack visualization solutions for executives to monitor 2,500+ GoStations with regional and temporal drill-downs (daily/weekly/monthly).
+- Developed an automated geospatial analysis tool with data analysts that cut GoStation site assessment from days to seconds — a 95% reduction in decision turnaround.
+
+#### Architecture Modernization
+- Rearchitected a monolithic decision support system into Python-based APIs and microservices, enabling data scientists to ship business logic directly without translation delays — improving debugging, testing, and deployment flexibility.
 
 ## Education
 
@@ -38,10 +49,10 @@ Senior Frontend Engineer with a strong focus on designing intuitive, visual, and
 
 ## Technical Skills
 
-- **Programming Languages / Frameworks:** Python, JavaScript, TypeScript, C++, SQL, Golang, Django, React, Svelte, Node.js, Express.js
+- **Programming Languages / Frameworks:** Python, JavaScript, TypeScript, C++, SQL, Golang, Django, React, Next.js, Svelte, SvelteKit, Node.js, Express.js
 - **Data Visualization & 3D:** D3.js, Three.js, Deck.gl, Google Maps JS API, Mapbox GL JS, openFrameworks
 - **DevOps:** GitLab CI, Docker, Kubernetes
-- **Specialties:** Large-scale data rendering, geospatial analysis, interactive dashboards, 3D data exploration, real-time visualization
+- **Specialties:** Large-scale data rendering, geospatial analysis, interactive dashboards, 3D data exploration, AI-assisted development workflows
 
 ## Language Skills
 

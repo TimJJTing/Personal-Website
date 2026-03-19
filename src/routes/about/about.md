@@ -1,42 +1,56 @@
 ---
 layout: _
 title: Jie-Ting Jiang
-summary: Senior Frontend Engineer with a strong focus on designing intuitive, visual, and data-driven applications that empower users through seamless interaction and advanced visualizations. Skilled in modern JavaScript frameworks, data visualization libraries, and creating highly performant, responsive applications. Proven ability to collaborate effectively with designers, data scientists, and engineers to build impactful solutions aligned with user needs and business goals. Proficient in JavaScript, Svelte, React, Three.js, D3.js, and backend development with Python and Django, with extensive knowledge of Docker and Kubernetes for deployment efficiency.
+summary: Full-stack engineer who turns complex data into tools people actually use. Over 6 years of building data visualization platforms, business intelligence systems, and internal tooling — from 3D exploration of million-record datasets to company-wide BI platforms serving 30+ departments. I architect end-to-end solutions (Python/Django APIs, React/Next.js/SvelteKit frontends, D3/Three.js visualizations) and care deeply about making data accessible to non-technical decision-makers. Currently exploring how AI-assisted workflows can fundamentally change how engineering teams ship data intensive solutions.
 experience:
   publish: true
   content:
+    - title: Frontend Engineer
+      startTime: 2025-09-22T08:00:00
+      endTime: ''
+      location: Taipei, Taiwan
+      company: Pay Web Dev, Line Pay
+      works: []
+      projectGroups:
+        - name: Cross-Framework Migration & AI Tooling
+          works:
+            - Led full migration of the Insurance Platform from SvelteKit to Next.js; designed AI-powered code review workflows and spec-driven development processes that cut estimated migration effort by ~70%.
+            - Introduced AI-assisted development practices (agents, MCPs, prompt workflows) across the engineering team, reducing repetitive tasks and accelerating feature delivery.
+        - name: Line Pay Finance Platform
+          works:
+            - Modernize and maintain the Finance Platform, improving long-term stability, performance, and developer experience across the stack.
+      publish: true
     - title: Senior Business Intelligence Engineer
-      startTime: 2024-07-01T00:00:00.000Z
-      endTime:
-      location: 'Taipei, Taiwan'
-      company: 'Data Office, Gogoro'
-      works:
-        - Collaborated with data scientists to design and develop a 3D visual exploration tool using Three.js and Svelte for querying, filtering, and visualizing over 1 million customers, enabling data analysts and decision-makers to analyze and interpret user behaviors and clusters while optimizing performance for smooth operation on average computers despite data volumes.
-        - Designed a standardized framework for building APIs for data-intensive applications in collaboration with data engineers, focusing on exploratory data analysis tools and decision science.
-      publish: true
-
-    - title: Business Intelligence Engineer
       startTime: 2022-10-01T00:00:00.000Z
-      endTime: 2024-06-30T00:00:00.000Z
-      location: 'Taipei, Taiwan'
-      company: 'Data Office, Gogoro'
-      works:
-        - Led the development and expansion of a business intelligence platform hosting diverse topics used by 30+ departments, enabling streamlined access to critical data insights and making decision science accessible across the organization.
-        - Designed and developed an asset management application supporting the querying, filtering, and visualization of over 1 million battery assets, enabling seamless access to asset states and improving decision-making efficiency.
-        - Developed component libraries for user interfaces, charts, and maps in both React.js and Svelte, collaborating closely with designers to ensure alignment with the company's brand image, ensuring code reusability and accelerating application developments.
+      endTime: 2025-08-17T23:59:00
+      location: Taipei, Taiwan
+      company: Data Office, Gogoro
+      works: []
+      projectGroups:
+        - name: Business Intelligence Platform & Data Visualization
+          works:
+            - Built and scaled a BI platform adopted by 30+ departments, making decision science accessible org-wide — from self-serve dashboards to advanced exploratory tools.
+            - Designed a 3D customer exploration tool (Three.js + Svelte) for querying and visualizing 1M+ records, optimized to run smoothly on average hardware; built a parallel asset management app for 1M+ battery assets.
+        - name: Platform & Developer Experience
+          works:
+            - Designed a standardized API framework for data-intensive applications with data engineers, enabling rapid development of exploratory analysis and decision science tools.
+            - Built shared component libraries (UI, charts, maps) in React and Svelte with designers, accelerating app development and ensuring visual consistency across the platform.
       publish: true
-
     - title: Data Visualization Engineer
       startTime: 2019-03-01T00:00:00.000Z
-      endTime: 2022-09-30T00:00:00.000Z
-      location: 'Taipei, Taiwan'
-      company: 'Network Excellence, Gogoro Network'
-      works:
-        - Led the design and development of full-stack data visualization solutions to enable executives to monitor company performance, including the status of over 2,500 GoStations, with regional and temporal aggregations at daily, weekly, and monthly levels.
-        - Reduced the location assessment time for GoStation deployments by 95%, from days to seconds, by developing an automated geospatial analysis process in collaboration with data analysts.
-        - Rearchitected a monolithic decision support system into a set of Python-based APIs and microservices, streamlining the integration of business logic from data scientists and analysts, which eliminated translation delays and enhanced flexibility in debugging, testing, deployment, and management.
+      endTime: 2022-09-30T23:59:00
+      location: Taipei, Taiwan
+      company: Network Excellence, Gogoro Network
+      works: []
+      projectGroups:
+        - name: Executive Dashboards & Geospatial Analysis
+          works:
+            - Built full-stack visualization solutions for executives to monitor 2,500+ GoStations with regional and temporal drill-downs (daily/weekly/monthly).
+            - Developed an automated geospatial analysis tool with data analysts that cut GoStation site assessment from days to seconds — a 95% reduction in decision turnaround.
+        - name: Architecture Modernization
+          works:
+            - Rearchitected a monolithic decision support system into Python-based APIs and microservices, enabling data scientists to ship business logic directly without translation delays — improving debugging, testing, and deployment flexibility.
       publish: true
-
 education:
   publish: true
   content:
@@ -44,64 +58,52 @@ education:
       startTime: 2015-01-01T00:00:00.000Z
       endTime: 2017-01-01T00:00:00.000Z
       institute: Johannes Kepler Universität Linz
-      location: 'Linz, Austria'
+      location: Linz, Austria
       works:
         - 'Internship: IT Department, SKF Group, Steyr, Austria'
         - 'Relevant coursework: Data Visualization, Data Analysis, Machine Learning'
       publish: true
-
     - title: Master of Business Administration in Information Management
       startTime: 2014-01-01T00:00:00.000Z
       endTime: 2018-01-01T00:00:00.000Z
       institute: National Sun Yat-Sen University
-      location: 'Kaohsiung, Taiwan'
-      works:
+      location: Kaohsiung, Taiwan
+      works: null
       publish: true
-
     - title: Bachelor of Science in Computer Science
       startTime: 2010-01-01T00:00:00.000Z
       endTime: 2014-01-01T00:00:00.000Z
       institute: National Sun Yat-Sen University
-      location: 'Kaohsiung, Taiwan'
-      works:
+      location: Kaohsiung, Taiwan
+      works: null
       publish: true
-
 skills:
   publish: true
   content:
-    - title: 'Programming Languages / Frameworks'
-      description: 'Python, JavaScript, C++, SQL, Golang, Django, React, Svelte, Node.js, Express.js'
+    - title: Programming Languages / Frameworks
+      description: Python, JavaScript, C++, SQL, Golang, Django, React, Svelte, Node.js, Express.js
       publish: true
-
     - title: Data Visualization
-      description: 'D3.js, Three.js, Deck.gl, Google Maps JS API, Mapbox GL JS'
+      description: D3.js, Three.js, Deck.gl, Google Maps JS API, Mapbox GL JS
       publish: true
-
     - title: DevOps
-      description: 'GitLab CI, Docker, Kubernetes'
+      description: GitLab CI, Docker, Kubernetes
       publish: true
-
     - title: Language Skills
-      description: 'English (Full Professional Proficiency), Chinese (Native), Taiwanese (Native), Deutsch (Niveau B1)'
+      description: English (Full Professional Proficiency), Chinese Mandarin (Native), Taiwanese (Native), Deutsch (Niveau B1)
       publish: true
-
 interests:
   publish: true
   content:
     - title: Infographics
       publish: true
-
     - title: Visual Journalism
       publish: true
-
     - title: Data Humanism
       publish: true
-
     - title: New Media Arts
       publish: true
-
     - title: Specialty Coffee
       publish: true
-
-links:
+links: null
 ---

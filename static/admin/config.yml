@@ -64,6 +64,17 @@ collections: # A list of collections the CMS should be able to edit
                     widget: list
                     required: false
                     field: { label: Work, name: work, widget: text }
+                  - label: Project Groups
+                    name: projectGroups
+                    widget: list
+                    required: false
+                    fields:
+                      - { label: 'Group Name', name: name, widget: string }
+                      - label: Works
+                        name: works
+                        widget: list
+                        required: false
+                        field: { label: Work, name: work, widget: text }
                   - { label: 'Publish', name: publish, widget: boolean, default: true }
 
           - label: Education

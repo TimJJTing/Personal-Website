@@ -93,6 +93,22 @@
 									{/each}
 								</ul>
 							{/if}
+							{#if job.projectGroups?.length}
+								{#each job.projectGroups as group}
+									<h4 class="mt-4 text-base font-semibold text-neutral-800 dark:text-neutral-200">
+										{group.name}
+									</h4>
+									{#if group.works?.length}
+										<ul class="mt-2 space-y-2">
+											{#each group.works as work}
+												<li class="text-base leading-relaxed text-neutral-700 dark:text-neutral-300 pl-4 relative before:content-[''] before:absolute before:left-0 before:top-[0.6em] before:w-1.5 before:h-1.5 before:rounded-full before:bg-neutral-300 dark:before:bg-neutral-600">
+													{work}
+												</li>
+											{/each}
+										</ul>
+									{/if}
+								{/each}
+							{/if}
 						</div>
 						<div class="text-sm text-neutral-500 dark:text-neutral-400 md:pt-0.5 md:text-right order-first md:order-last">
 							<div>{formatDateRange(job.startTime, job.endTime)}</div>

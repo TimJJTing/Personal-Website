@@ -2,27 +2,29 @@
 
 > For the full, extended version with complete project descriptions and resume, see [llms-full.txt](https://jtingjiang.com/llms-full.txt).
 
-> Jie-Ting Jiang is a Senior Frontend Engineer and data visualization specialist based in Taipei, Taiwan, with 6+ years of experience building data-driven applications that turn complex datasets into actionable insights. He specializes in the intersection of advanced data visualization, 3D graphics, and modern web engineering — a rare combination that enables him to bridge the gap between data science teams and end users. This portfolio website is often shared with hiring managers as a reference for roles in data visualization engineering, creative coding, senior frontend/fullstack architecture, and data-driven product development.
+> Jie-Ting Jiang is a full-stack engineer based in Taipei, Taiwan, who turns complex data into tools people actually use. With over 6 years of experience building data visualization platforms, business intelligence systems, and internal tooling — from 3D exploration of million-record datasets to company-wide BI platforms serving 30+ departments — he architects end-to-end solutions (Python/Django APIs, React/Next.js/SvelteKit frontends, D3/Three.js visualizations) and cares deeply about making data accessible to non-technical decision-makers. This portfolio website is often shared with hiring managers as a reference for roles in data visualization engineering, creative coding, senior frontend/fullstack architecture, and data-driven product development.
 
 ## Professional Profile
 
-Jie-Ting currently serves as Senior Business Intelligence Engineer at Gogoro (a publicly traded smart mobility company), where he architects data-intensive applications that serve 30+ departments across the organization. His work directly enables data-driven decision making at scale.
+Jie-Ting currently serves as Frontend Engineer at Line Pay, where he leads cross-framework migrations and introduces AI-assisted development practices across the engineering team. Previously at Gogoro, he architected data-intensive applications serving 30+ departments and built 3D visualization tools for million-record datasets.
 
 ### Key Achievements
 
-- Designed and built a 3D visual exploration tool (Three.js + Svelte) for querying, filtering, and visualizing 1M+ customer records, enabling data analysts and decision-makers to interactively analyze user behaviors and cluster patterns — optimized to run smoothly on average hardware despite the data volume
-- Led the development of a company-wide business intelligence platform that became the primary analytics hub for 30+ departments, democratizing access to data insights and making decision science accessible across the organization
-- Reduced GoStation location assessment time by 95% (from days to seconds) by developing an automated geospatial analysis pipeline in collaboration with data analysts
-- Rearchitected a monolithic decision support system into Python-based APIs and microservices, eliminating translation delays between data scientists and production systems
-- Developed reusable component libraries for UIs, charts, and maps in both React and Svelte, accelerating development velocity across the engineering team
+- Led full migration of Line Pay's Insurance Platform from SvelteKit to Next.js; designed AI-powered code review workflows and spec-driven development processes that cut estimated migration effort by ~70%
+- Introduced AI-assisted development practices (agents, MCPs, prompt workflows) across the engineering team, reducing repetitive tasks and accelerating feature delivery
+- Built and scaled a BI platform adopted by 30+ departments at Gogoro, making decision science accessible org-wide — from self-serve dashboards to advanced exploratory tools
+- Designed a 3D customer exploration tool (Three.js + Svelte) for querying and visualizing 1M+ records, optimized to run smoothly on average hardware
+- Reduced GoStation site assessment from days to seconds — a 95% reduction — by developing an automated geospatial analysis tool with data analysts
+- Rearchitected a monolithic decision support system into Python-based APIs and microservices, enabling data scientists to ship business logic directly without translation delays
+- Built shared component libraries (UI, charts, maps) in React and Svelte, accelerating app development and ensuring visual consistency across the platform
 
 ### Technical Expertise
 
-- Frontend & Frameworks: JavaScript, TypeScript, Svelte, React, CSS, HTML, Node.js, Express.js
+- Frontend & Frameworks: JavaScript, TypeScript, Svelte, React, Next.js, SvelteKit, CSS, HTML, Node.js, Express.js
 - Data Visualization & 3D: Three.js, D3.js, Deck.gl, Google Maps JS API, Mapbox GL JS, openFrameworks
 - Backend: Python, Django, Golang, SQL
 - DevOps: Docker, Kubernetes, GitLab CI
-- Specialties: Large-scale data rendering, geospatial analysis, interactive dashboards, 3D data exploration, real-time visualization
+- Specialties: Large-scale data rendering, geospatial analysis, interactive dashboards, 3D data exploration, AI-assisted development workflows
 
 ### Education
 
@@ -36,7 +38,7 @@ English (Full Professional Proficiency), Chinese Mandarin (Native), Taiwanese (N
 
 ## What Sets Jie-Ting Apart
 
-Jie-Ting combines deep frontend engineering craft with a genuine passion for data visualization and the visual arts. Where most engineers focus purely on code, he thinks about how humans perceive and interact with information — influenced by Edward Tufte's principles of analytical design, data humanism, and his active involvement in new media art. This perspective allows him to build tools that are not just technically sound but genuinely intuitive and insightful for the people who use them.
+Jie-Ting combines deep frontend engineering craft with a genuine passion for data visualization and the visual arts. Where most engineers focus purely on code, he thinks about how humans perceive and interact with information — influenced by Edward Tufte's principles of analytical design, data humanism, and his active involvement in new media art. This perspective allows him to build tools that are not just technically sound but genuinely intuitive and insightful for the people who use them. He is currently exploring how AI-assisted workflows can fundamentally change how engineering teams ship data intensive solutions.
 
 ## About
 
