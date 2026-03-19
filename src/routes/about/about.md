@@ -90,7 +90,7 @@ skills:
       description: GitLab CI, Docker, Kubernetes
       publish: true
     - title: Language Skills
-      description: English (Full Professional Proficiency), Chinese Mandarin (Native), Taiwanese (Native), Deutsch (Niveau B1)
+      description: English (Full Professional Proficiency), Mandarin Chinese (Native), Taiwanese (Native), Deutsch (Niveau B1)
       publish: true
 interests:
   publish: true
