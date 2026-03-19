@@ -15,42 +15,50 @@
 	} = $props();
 </script>
 
-<div class="my-12 flex min-h-32">
-	<NetlifyEnhancedImg
-		src={thumbnail || banner || '/uploads/favicon.png'}
-		alt={`${title} thumbnail`}
-		thumbnail
-		class="rounded-xl"
-	/>
-	<div class="grid-rows-auto ml-6 grid grow gap-2 md:ml-8 lg:ml-12">
-		<div class="flex flex-col md:flex-row md:justify-between">
-			<h3 class="mb-2 text-xl font-medium md:text-2xl"><a href={path}>{title}</a></h3>
-			<p class="mb-2 text-sm font-light text-neutral-500 md:text-2xl">
-				{#if date}
-					{new Date(date).toLocaleDateString()}
-				{:else if year}
-					{year}
-				{/if}
-			</p>
+<a href={path} class="item-card group block py-6 -mx-4 px-4 rounded-sm hover:bg-neutral-50 dark:hover:bg-neutral-900/50 transition-colors duration-300">
+	<div class="flex min-h-28">
+		<div class="shrink-0">
+			<NetlifyEnhancedImg
+				src={thumbnail || banner || '/uploads/favicon.png'}
+				alt={`${title} thumbnail`}
+				thumbnail
+				class="rounded-lg"
+			/>
 		</div>
-		<!-- {#if categories}
-			<div class="flex flex-row gap-2">
-				{#each categories as category (category)}
-					<span><a href="/?category={category}">{category}</a></span>
-				{/each}
+		<div class="ml-6 md:ml-8 lg:ml-10 flex flex-col grow min-w-0">
+			<div class="flex flex-col md:flex-row md:items-baseline md:justify-between gap-1 md:gap-4">
+				<h3 class="text-lg md:text-xl font-medium text-neutral-900 dark:text-neutral-100 tracking-tight group-hover:text-neutral-700 dark:group-hover:text-neutral-200 transition-colors duration-300">
+					{title}
+				</h3>
+				<span class="text-sm font-light text-neutral-400 dark:text-neutral-500 tabular-nums shrink-0">
+					{#if date}
+						{new Date(date).toLocaleDateString()}
+					{:else if year}
+						{year}
+					{/if}
+				</span>
 			</div>
-		{/if} -->
-		<p class="text-neutral-200">{description}</p>
-		<div class="flex flex-row gap-4 self-end font-light text-neutral-400">
-			{#if slides}
-				<span class="hidden md:inline"><a href={slides} target="_blank">Slides</a></span>
-			{/if}
-			{#if additionalLinks}
-				{#each additionalLinks as { title, url }, i (url)}
-					<span class="hidden md:inline"><a href={url} target="_blank">{title}</a></span>
-				{/each}
-			{/if}
-			<span><a href={path}>Read more...</a></span>
+			<p class="!text-sm mt-2 text-neutral-500 dark:text-neutral-400 font-light line-clamp-2">{description}</p>
+			<div class="flex flex-row flex-wrap gap-4 mt-auto pt-3 text-sm font-light text-neutral-400 dark:text-neutral-500">
+				{#if slides}
+					<span class="hidden md:inline hover:text-neutral-700 dark:hover:text-neutral-300 transition-colors duration-200"><a href={slides} target="_blank" onclick={(e) => e.stopPropagation()}>Slides</a></span>
+				{/if}
+				{#if additionalLinks}
+					{#each additionalLinks as { title: linkTitle, url }, i (url)}
+						<span class="hidden md:inline hover:text-neutral-700 dark:hover:text-neutral-300 transition-colors duration-200"><a href={url} target="_blank" onclick={(e) => e.stopPropagation()}>{linkTitle}</a></span>
+					{/each}
+				{/if}
+				<span class="text-neutral-500 dark:text-neutral-400 group-hover:text-neutral-700 dark:group-hover:text-neutral-200 transition-colors duration-200">Read more →</span>
+			</div>
 		</div>
 	</div>
-</div>
+</a>
+
+<style>
+	.item-card,
+	.item-card:hover,
+	.item-card :global(a),
+	.item-card :global(a:hover) {
+		text-decoration: none;
+	}
+</style>

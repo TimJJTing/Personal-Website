@@ -12,10 +12,11 @@
 	let title = $derived(data.meta.title);
 	let categories = $derived(data.meta.categories);
 	let images = $derived(data.meta.images);
+	let slides = $derived(data.meta.slides);
 	let additionalLinks = $derived(data.meta.additionalLinks);
 </script>
 
-<main>
+<main class="py-12 md:py-20">
 	<section>
 		<article>
 			{#if banner}
@@ -27,7 +28,6 @@
 			{#if categories}
 				<TagList tags={categories} />
 			{/if}
-
 			<Content />
 			{#if images}
 				{#each images as { image, caption }, i (i)}
@@ -35,12 +35,21 @@
 				{/each}
 			{/if}
 
+			{#if slides}
+				<h2>Slides</h2>
+				<ul>
+					<li>
+						<a href={slides} target="_blank">See Slides...</a>
+					</li>
+				</ul>
+			{/if}
+
 			{#if additionalLinks}
 				<h2>Further Reading</h2>
 				<ul>
-					{#each additionalLinks as { url, title }, i (i)}
+					{#each additionalLinks as { url, title: linkTitle }, i (i)}
 						<li>
-							<a href={url} target="_blank">{title}</a>
+							<a href={url} target="_blank">{linkTitle}</a>
 						</li>
 					{/each}
 				</ul>

@@ -6,16 +6,16 @@
 	let articles = $derived(data.articles);
 </script>
 
-<header>
-	<section class="my-8 md:my-16">
-		<h1 class="text-5xl md:text-6xl font-bold">{title}</h1>
-	</section>
+<header class="py-12 md:py-20">
+	<h1 class="text-5xl md:text-7xl lg:text-8xl font-extralight tracking-tight text-neutral-900 dark:text-neutral-100 leading-[0.95]">
+		{title}
+	</h1>
 </header>
 <main>
-	<section class="my-8 md:my-16">
+	<section class="mb-16 md:mb-24">
 		<ItemList items={works} title="Works" />
 	</section>
-	<section class="my-8 md:my-16">
+	<section class="mb-16 md:mb-24">
 		<ItemList items={articles} title="Blog" />
 	</section>
 </main>

@@ -2,6 +2,6 @@
 	let { children, ...restProps } = $props();
 </script>
 
-<span class="mr-2 mt-2 rounded-full bg-neutral-600 px-4 py-1 md:mr-4 md:py-2" {...restProps}>
+<span class="inline-block mr-1.5 mt-1.5 px-3 py-1.5 text-sm font-light rounded-sm bg-neutral-100 dark:bg-neutral-800/80 text-neutral-700 dark:text-neutral-300 border border-neutral-200/60 dark:border-neutral-700/40" {...restProps}>
 	{@render children()}
 </span>

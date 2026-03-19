@@ -5,8 +5,8 @@
 	let title = $derived(data.meta.title);
 </script>
 
-<main>
-	<section class="my-8">
+<main class="py-12 md:py-20">
+	<section>
 		<ItemList items={articles} {title} />
 	</section>
 </main>
