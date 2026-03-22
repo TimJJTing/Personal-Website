@@ -1,6 +1,6 @@
 <script>
 	import DownloadPdfButton from '$lib/components/resume/download-pdf-button.svelte';
-	import { formatDateRange, formatYearRange, published } from '$lib/utils/resume-helpers.js';
+	import { formatDateRange, formatYearRange, published } from '$lib/utils/resume/helpers.js';
 
 	let { data } = $props();
 	let meta = $derived(data.meta);

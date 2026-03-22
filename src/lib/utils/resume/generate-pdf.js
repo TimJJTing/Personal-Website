@@ -1,5 +1,5 @@
 import { jsPDF } from 'jspdf';
-import { formatDateRange, formatYearRange, published } from './resume-helpers.js';
+import { formatDateRange, formatYearRange, published } from './helpers.js';
 import {
 	COLOR,
 	FONT_RATIO,
@@ -10,7 +10,7 @@ import {
 	EDUCATION,
 	LABELED,
 	LINE_HEIGHT
-} from './resume-pdf-consts.js';
+} from './consts.js';
 
 /**
  * Shared drawing context passed to section renderers.
