@@ -1,6 +1,6 @@
 # Personal Website
 
-A personal website built with SvelteKit, Tailwind CSS, and mdsvex. Features a portfolio of works, articles written in Markdown, and an about page. Deployed on Netlify.
+A personal website built with SvelteKit, Tailwind CSS, and mdsvex. Features a portfolio of works, articles written in Markdown, an about/resume page with a prerendered PDF download, and a CMS-backed content pipeline. Deployed on Netlify.
 
 ## Getting Started
 
@@ -46,6 +46,7 @@ pnpm test
 | Markdown plugins | [remark-footnotes](https://github.com/remarkjs/remark-footnotes)                                                       |
 | CMS              | [Sveltia CMS](https://github.com/sveltia/sveltia-cms) (Git-based, GitHub backend)                                      |
 | Deployment       | [Netlify](https://netlify.com) via `@sveltejs/adapter-netlify` (SSG + prerender)                                       |
+| Resume PDF       | [jsPDF](https://github.com/parallax/jsPDF) — prerendered at build time from resume metadata                            |
 | Image CDN        | Netlify Image CDN (requires `netlify dev` for local use)                                                               |
 | Testing          | [Vitest](https://vitest.dev) (unit) + [Playwright](https://playwright.dev) (e2e)                                       |
 | Linting          | ESLint + Prettier (with `prettier-plugin-svelte` and `prettier-plugin-tailwindcss`)                                    |
@@ -58,12 +59,15 @@ pnpm test
 src/
 ├── lib/
 │   ├── components/       # Reusable Svelte components (nav, footer, item, tag, img)
+│   │   └── resume/       # Resume-specific components (download button)
 │   ├── markdown-layouts/ # Svelte layout wrappers for mdsvex content (article, work, links, default)
 │   ├── attachments/      # Svelte action utilities (e.g. portal)
-│   └── utils/            # Shared utility functions
+│   └── utils/
+│       └── resume/       # Resume PDF generation (consts, helpers, generate-pdf)
 └── routes/
     ├── +page.svelte      # Home page
     ├── about/            # About page with Markdown content
+    │   └── [filename].pdf/ # Prerendered resume PDF endpoint
     ├── articles/         # Article listing and [slug] detail pages (Markdown)
     ├── works/            # Works listing and [slug] detail pages (Markdown)
     ├── api/              # JSON endpoints for articles and works

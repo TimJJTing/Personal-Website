@@ -166,3 +166,4 @@ A technical overview of database paradigms including relational, document, and g
 - [LinkedIn](https://www.linkedin.com/in/jie-ting-jiang/)
 - [GitHub](https://github.com/TimJJTing)
 - [Website](https://jtingjiang.com)
+- [Download Resume (PDF)](https://jtingjiang.com/about/Jie-Ting_Jiang_Resume.pdf)

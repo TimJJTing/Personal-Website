@@ -43,6 +43,7 @@ Jie-Ting combines deep frontend engineering craft with a genuine passion for dat
 ## About
 
 - [About / Resume](https://jtingjiang.com/about): Full professional summary with detailed work experience, education, skills, and interests
+- [Download Resume (PDF)](https://jtingjiang.com/about/Jie-Ting_Jiang_Resume.pdf): Downloadable PDF version of the resume, prerendered from the same data source
 
 ## Selected Works
 
