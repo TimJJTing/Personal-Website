@@ -1,6 +1,9 @@
 ---
 layout: _
 title: Jie-Ting Jiang
+email: jting.jiang@gmail.com
+website: https://jtingjiang.com/
+github: https://github.com/TimJJTing
 summary: Full-stack engineer who turns complex data into tools people actually use. Over 6 years of building data visualization platforms, business intelligence systems, and internal tooling — from 3D exploration of million-record datasets to company-wide BI platforms serving 30+ departments. I architect end-to-end solutions (Python/Django APIs, React/Next.js/SvelteKit frontends, D3/Three.js visualizations) and care deeply about making data accessible to non-technical decision-makers. Currently exploring how AI-assisted workflows can fundamentally change how engineering teams ship data intensive solutions.
 experience:
   publish: true
@@ -61,7 +64,10 @@ education:
       location: Linz, Austria
       works:
         - 'Internship: IT Department, SKF Group, Steyr, Austria'
-        - 'Relevant coursework: Data Visualization, Data Analysis, Machine Learning'
+      courseworks:
+        - Data Visualization
+        - Data Analysis
+        - Machine Learning
       publish: true
     - title: Master of Business Administration in Information Management
       startTime: 2014-01-01T00:00:00.000Z
@@ -69,6 +75,9 @@ education:
       institute: National Sun Yat-Sen University
       location: Kaohsiung, Taiwan
       works: null
+      courseworks:
+        - Database Management
+        - MIS
       publish: true
     - title: Bachelor of Science in Computer Science
       startTime: 2010-01-01T00:00:00.000Z
@@ -76,6 +85,11 @@ education:
       institute: National Sun Yat-Sen University
       location: Kaohsiung, Taiwan
       works: null
+      courseworks:
+        - Data Structure
+        - Computer Architectures
+        - Algorithm
+        - Computer Graphics
       publish: true
 skills:
   publish: true
