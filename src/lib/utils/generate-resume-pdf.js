@@ -62,7 +62,7 @@ export function generateResumePdf(meta, options = {}) {
 	let y = marginTop;
 
 	/** @type {[number, number, number]} */
-	const TEAL = [13, 148, 136];
+	const TEAL = [0, 151, 167];
 	/** @type {[number, number, number]} */
 	const BLACK = [0, 0, 0];
 	/** @type {[number, number, number]} */
@@ -101,7 +101,8 @@ export function generateResumePdf(meta, options = {}) {
 		doc.setFont('helvetica', 'normal');
 		doc.setFontSize(sz(0.89));
 		doc.setTextColor(...TEAL);
-		const contactLine = contactParts.join(' \u2022 ');
+		const separator = '  \u2022  ';
+		const contactLine = contactParts.join(separator);
 		doc.text(contactLine, marginLeft, y);
 		// Add clickable links
 		let linkX = marginLeft;
@@ -115,7 +116,7 @@ export function generateResumePdf(meta, options = {}) {
 					: `https://${part}`;
 			doc.link(linkX, y - 3, partWidth, 4, { url });
 			if (i < contactParts.length - 1) {
-				linkX += partWidth + doc.getTextWidth(' \u2022 ');
+				linkX += partWidth + doc.getTextWidth(separator);
 			}
 		}
 		y += 2;
