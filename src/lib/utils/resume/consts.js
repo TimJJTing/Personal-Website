@@ -153,3 +153,32 @@ export const LABELED = {
  * and converted from pt to mm.
  */
 export const LINE_HEIGHT = 1.45;
+
+/**
+ * A4 page dimensions and margins (mm):
+ * ```
+ *  ┌─────────────────── 210 (WIDTH) ────────────────────┐
+ *  │                  MARGIN_TOP (7)                    │
+ *  │  ┌───────────────────────────────────────────┐     │
+ *  │  │                                           │     │
+ *  │  │                content area               │     │
+ *  │  │                  190 × 283                │     │ ↕ 297 (HEIGHT)
+ *  │  │                                           │     │
+ *  │  │                                           │     │
+ *  │  └───────────────────────────────────────────┘     │
+ *  │                 MARGIN_BOTTOM (7)                  │
+ *  └────────────────────────────────────────────────────┘
+ *    ↔ MARGIN_LEFT (10)             MARGIN_RIGHT (10) ↔
+ * ```
+ */
+export const PAGE = {
+	WIDTH: 210,
+	HEIGHT: 297,
+	MARGIN_TOP: 7,
+	MARGIN_BOTTOM: 7,
+	MARGIN_LEFT: 10,
+	MARGIN_RIGHT: 10
+};
+
+/** Default base font size in pt. */
+export const BASE_FONT_SIZE = 11;

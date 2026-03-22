@@ -9,7 +9,9 @@ import {
 	PROJECT_GROUP,
 	EDUCATION,
 	LABELED,
-	LINE_HEIGHT
+	LINE_HEIGHT,
+	PAGE,
+	BASE_FONT_SIZE
 } from './consts.js';
 
 /**
@@ -358,26 +360,20 @@ function renderInterests(ctx, meta) {
  * @returns {ArrayBuffer}
  */
 export function generateResumePdf(meta, options = {}) {
-	const baseFontSize = options.baseFontSize ?? 11;
+	const baseFontSize = options.baseFontSize ?? BASE_FONT_SIZE;
 
 	const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-	const pageWidth = 210;
-	const pageHeight = 297;
-	const marginLeft = 10;
-	const marginRight = 10;
-	const marginTop = 7;
-	const marginBottom = 7;
-	const contentWidth = pageWidth - marginLeft - marginRight;
-	const maxY = pageHeight - marginBottom;
+	const contentWidth = PAGE.WIDTH - PAGE.MARGIN_LEFT - PAGE.MARGIN_RIGHT;
+	const maxY = PAGE.HEIGHT - PAGE.MARGIN_BOTTOM;
 
 	/** @type {PdfContext} */
 	const ctx = {
 		doc,
-		y: marginTop,
+		y: PAGE.MARGIN_TOP,
 		baseFontSize,
-		marginLeft,
-		marginRight,
-		pageWidth,
+		marginLeft: PAGE.MARGIN_LEFT,
+		marginRight: PAGE.MARGIN_RIGHT,
+		pageWidth: PAGE.WIDTH,
 		contentWidth,
 		sz: (/** @type {number} */ ratio) => baseFontSize * ratio
 	};
