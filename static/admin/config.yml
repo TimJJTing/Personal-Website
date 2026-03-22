@@ -44,6 +44,9 @@ collections: # A list of collections the CMS should be able to edit
         fields:
           - { label: 'Layout', name: layout, widget: hidden, hint: 'DO NOT CHANGE', default: _ }
           - { label: 'Title', name: title, widget: string, default: 'Jie-Ting Jiang' }
+          - { label: 'Email', name: email, widget: string, required: false }
+          - { label: 'Website', name: website, widget: string, required: false }
+          - { label: 'GitHub', name: github, widget: string, required: false }
           - { label: 'Summary', name: summary, widget: text }
           - label: Experience
             name: experience
@@ -96,6 +99,11 @@ collections: # A list of collections the CMS should be able to edit
                     widget: list
                     required: false
                     field: { label: Work, name: work, widget: text }
+                  - label: Courseworks
+                    name: courseworks
+                    widget: list
+                    required: false
+                    field: { label: Coursework, name: coursework, widget: string }
                   - { label: 'Publish', name: publish, widget: boolean, default: true }
 
           - label: Skills
