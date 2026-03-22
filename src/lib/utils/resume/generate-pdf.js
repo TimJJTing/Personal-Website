@@ -351,9 +351,11 @@ function renderInterests(ctx, meta) {
 // ── Main entry point ──
 
 /**
+ * Generate a resume PDF and return it as an ArrayBuffer.
  * @param {Record<string, any>} meta - Resume metadata from about.md frontmatter
  * @param {object} [options]
  * @param {number} [options.baseFontSize] - Base font size in pt (default 11)
+ * @returns {ArrayBuffer}
  */
 export function generateResumePdf(meta, options = {}) {
 	const baseFontSize = options.baseFontSize ?? 11;
@@ -392,8 +394,5 @@ export function generateResumePdf(meta, options = {}) {
 		return generateResumePdf(meta, { baseFontSize: baseFontSize - 0.5 });
 	}
 
-	const filename = meta.title
-		? `${meta.title.replace(/\s+/g, '_')}_Resume.pdf`
-		: 'Resume.pdf';
-	doc.save(filename);
+	return doc.output('arraybuffer');
 }

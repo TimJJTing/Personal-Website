@@ -1,22 +1,14 @@
 <script>
 	let { meta } = $props();
-	let loading = $state(false);
-
-	async function handleDownload() {
-		loading = true;
-		try {
-			const { generateResumePdf } = await import('$lib/utils/resume/generate-pdf.js');
-			generateResumePdf(meta);
-		} finally {
-			loading = false;
-		}
-	}
+	let filename = $derived(
+		meta.title ? `${meta.title.replace(/\s+/g, '_')}_Resume` : 'Resume'
+	);
 </script>
 
-<button
-	onclick={handleDownload}
-	disabled={loading}
-	class="group/btn inline-flex items-center gap-2 text-sm font-medium text-neutral-500 transition-colors duration-300 hover:text-neutral-900 disabled:cursor-wait disabled:opacity-50 dark:text-neutral-400 dark:hover:text-neutral-100"
+<a
+	href="/about/{filename}.pdf"
+	download="{filename}.pdf"
+	class="group/btn inline-flex items-center gap-2 text-sm font-medium text-neutral-500 transition-colors duration-300 hover:text-neutral-900 hover:no-underline dark:text-neutral-400 dark:hover:text-neutral-100"
 >
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
@@ -34,5 +26,5 @@
 		<polyline points="7 10 12 15 17 10" />
 		<line x1="12" y1="15" x2="12" y2="3" />
 	</svg>
-	<span class="group-hover/btn:underline">{loading ? 'Generating...' : 'Download Resume'}</span>
-</button>
+	<span class="group-hover/btn:underline">Download Resume</span>
+</a>
