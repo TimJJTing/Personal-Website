@@ -1,48 +1,9 @@
 <script>
 	import DownloadPdfButton from '$lib/components/resume/download-pdf-button.svelte';
+	import { formatDateRange, formatYearRange, published } from '$lib/utils/resume-helpers.js';
 
 	let { data } = $props();
 	let meta = $derived(data.meta);
-
-	/**
-	 * @param {string} dateStr
-	 */
-	function formatDate(dateStr) {
-		const d = new Date(dateStr);
-		return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
-	}
-
-	/**
-	 * @param {string} startTime
-	 * @param {string | null | undefined} endTime
-	 */
-	function formatDateRange(startTime, endTime) {
-		const start = formatDate(startTime);
-		const end = endTime ? formatDate(endTime) : 'Present';
-		return `${start} — ${end}`;
-	}
-
-	/**
-	 * @param {string} startTime
-	 * @param {string | null | undefined} endTime
-	 */
-	function formatYearRange(startTime, endTime) {
-		const startYear = new Date(startTime).getFullYear();
-		const endYear = endTime ? new Date(endTime).getFullYear() : undefined;
-		if (endYear && endYear !== startYear) {
-			return `${startYear} — ${endYear}`;
-		}
-		return `${startYear}`;
-	}
-
-	/**
-	 * @template {Record<string, any> & {publish: boolean}} T
-	 * @param {T[]} items
-	 * @returns {T[]}
-	 */
-	function published(items) {
-		return items.filter((item) => item.publish);
-	}
 </script>
 
 <main class="resume-page py-12 md:py-20">

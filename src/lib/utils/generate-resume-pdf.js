@@ -1,50 +1,359 @@
 import { jsPDF } from 'jspdf';
+import { formatDateRange, formatYearRange, published } from './resume-helpers.js';
+import {
+	COLOR,
+	FONT_RATIO,
+	HEADER,
+	SECTION,
+	ENTRY,
+	PROJECT_GROUP,
+	EDUCATION,
+	LABELED,
+	LINE_HEIGHT
+} from './resume-pdf-consts.js';
 
 /**
- * @param {string} dateStr
+ * Shared drawing context passed to section renderers.
+ * @typedef {object} PdfContext
+ * @property {import('jspdf').jsPDF} doc
+ * @property {number} y
+ * @property {number} baseFontSize
+ * @property {number} marginLeft
+ * @property {number} marginRight
+ * @property {number} pageWidth
+ * @property {number} contentWidth
+ * @property {(ratio: number) => number} sz
  */
-function formatDate(dateStr) {
-	if (!dateStr) return 'Present';
-	const d = new Date(dateStr);
-	return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+
+/**
+ * Draw a section header with a horizontal rule.
+ * @param {PdfContext} ctx
+ * @param {string} title
+ */
+function drawSectionHeader(ctx, title) {
+	ctx.y += SECTION.SPACE_ABOVE;
+	ctx.doc.setFont('helvetica', 'bold');
+	ctx.doc.setFontSize(ctx.sz(FONT_RATIO.SECTION_HEADER));
+	ctx.doc.setTextColor(...COLOR.BLACK);
+	ctx.doc.text(title, ctx.marginLeft, ctx.y);
+	ctx.y += SECTION.RULE_GAP;
+	ctx.doc.setDrawColor(0, 0, 0);
+	ctx.doc.setLineWidth(0.3);
+	ctx.doc.line(ctx.marginLeft, ctx.y, ctx.pageWidth - ctx.marginRight, ctx.y);
+	ctx.y += SECTION.SPACE_BELOW;
 }
 
 /**
- * @param {string} startTime
- * @param {string | null | undefined} endTime
+ * Draw wrapped text and advance y.
+ * @param {PdfContext} ctx
+ * @param {string} text
+ * @param {number} x
+ * @param {number} maxWidth
+ * @param {object} [opts]
+ * @param {'normal'|'bold'|'italic'|'bolditalic'} [opts.fontStyle]
+ * @param {number} [opts.fontSize]
+ * @param {[number, number, number]} [opts.color]
+ * @param {number} [opts.lineHeight]
  */
-function formatDateRange(startTime, endTime) {
-	const start = formatDate(startTime);
-	const end = endTime ? formatDate(endTime) : 'Present';
-	return `${start} - ${end}`;
-}
-
-/**
- * @param {string} startTime
- * @param {string | null | undefined} endTime
- */
-function formatYearRange(startTime, endTime) {
-	const startYear = new Date(startTime).getFullYear();
-	const endYear = endTime ? new Date(endTime).getFullYear() : undefined;
-	if (endYear && endYear !== startYear) {
-		return `${startYear}-${endYear}`;
+function drawText(ctx, text, x, maxWidth, opts = {}) {
+	const {
+		fontStyle = 'normal',
+		fontSize = ctx.baseFontSize,
+		color = COLOR.DARK_GRAY,
+		lineHeight = LINE_HEIGHT
+	} = opts;
+	ctx.doc.setFont('helvetica', fontStyle);
+	ctx.doc.setFontSize(fontSize);
+	ctx.doc.setTextColor(...color);
+	const lines = ctx.doc.splitTextToSize(text, maxWidth);
+	const lh = (fontSize * lineHeight * 25.4) / 72; // pt to mm
+	for (const line of lines) {
+		ctx.doc.text(line, x, ctx.y);
+		ctx.y += lh;
 	}
-	return `${startYear}`;
 }
 
 /**
- * @template {Record<string, any> & {publish: boolean}} T
- * @param {T[] | null | undefined} items
- * @returns {T[]}
+ * Draw a bullet point item.
+ * @param {PdfContext} ctx
+ * @param {string} text
+ * @param {number} x
+ * @param {number} maxWidth
  */
-function published(items) {
-	return items?.filter((item) => item.publish) ?? [];
+function drawBullet(ctx, text, x, maxWidth) {
+	const bulletIndent = 4;
+	ctx.doc.setFillColor(...COLOR.DARK_GRAY);
+	ctx.doc.circle(x + 1.2, ctx.y - 0.8, 0.6, 'F');
+	drawText(ctx, text, x + bulletIndent, maxWidth - bulletIndent, {
+		fontSize: ctx.baseFontSize,
+		color: COLOR.DARK_GRAY
+	});
+	ctx.y += ENTRY.BULLET_GAP;
 }
+
+/**
+ * Draw right-aligned text.
+ * @param {PdfContext} ctx
+ * @param {string} text
+ * @param {number} atY
+ * @param {object} [opts]
+ * @param {'normal'|'bold'} [opts.fontStyle]
+ * @param {number} [opts.fontSize]
+ * @param {[number, number, number]} [opts.color]
+ */
+function drawRightText(ctx, text, atY, opts = {}) {
+	const { fontStyle = 'normal', fontSize = ctx.baseFontSize, color = COLOR.DARK_GRAY } = opts;
+	ctx.doc.setFont('helvetica', fontStyle);
+	ctx.doc.setFontSize(fontSize);
+	ctx.doc.setTextColor(...color);
+	ctx.doc.text(text, ctx.pageWidth - ctx.marginRight, atY, { align: 'right' });
+}
+
+/**
+ * Draw a bold label followed by wrapped normal-weight text on the same line.
+ * Used by Skills and Interests sections.
+ * @param {PdfContext} ctx
+ * @param {string} label
+ * @param {string} value
+ */
+function drawLabeledLine(ctx, label, value) {
+	ctx.doc.setFont('helvetica', 'bold');
+	ctx.doc.setFontSize(ctx.baseFontSize);
+	ctx.doc.setTextColor(...COLOR.BLACK);
+	const labelWidth = ctx.doc.getTextWidth(label);
+	ctx.doc.text(label, ctx.marginLeft, ctx.y);
+
+	ctx.doc.setFont('helvetica', 'normal');
+	ctx.doc.setTextColor(...COLOR.DARK_GRAY);
+	const descLines = ctx.doc.splitTextToSize(value, ctx.contentWidth - labelWidth);
+	ctx.doc.text(descLines[0], ctx.marginLeft + labelWidth, ctx.y);
+	ctx.y += LABELED.LINE_HEIGHT;
+	if (descLines.length > 1) {
+		const remainingText = descLines.slice(1).join(' ');
+		const rewrapped = ctx.doc.splitTextToSize(remainingText, ctx.contentWidth);
+		for (const line of rewrapped) {
+			ctx.doc.text(line, ctx.marginLeft, ctx.y);
+			ctx.y += LABELED.LINE_HEIGHT;
+		}
+	}
+}
+
+// ── Section renderers ──
+
+/**
+ * @param {PdfContext} ctx
+ * @param {Record<string, any>} meta
+ */
+function renderHeader(ctx, meta) {
+	ctx.doc.setFont('helvetica', 'bold');
+	ctx.doc.setFontSize(ctx.sz(FONT_RATIO.NAME));
+	ctx.doc.setTextColor(...COLOR.BLACK);
+	ctx.doc.text(meta.title, ctx.marginLeft, ctx.y + HEADER.BASELINE_OFFSET);
+	ctx.y += HEADER.BLOCK_HEIGHT;
+
+	const contactParts = [];
+	if (meta.email) contactParts.push(meta.email);
+	if (meta.website) contactParts.push(meta.website);
+	if (meta.github) contactParts.push(meta.github);
+
+	if (contactParts.length) {
+		ctx.doc.setFont('helvetica', 'normal');
+		ctx.doc.setFontSize(ctx.sz(FONT_RATIO.CONTACT));
+		ctx.doc.setTextColor(...COLOR.TEAL);
+		const separator = '  \u2022  ';
+		const contactLine = contactParts.join(separator);
+		ctx.doc.text(contactLine, ctx.marginLeft, ctx.y);
+
+		let linkX = ctx.marginLeft;
+		for (let i = 0; i < contactParts.length; i++) {
+			const part = contactParts[i];
+			const partWidth = ctx.doc.getTextWidth(part);
+			const url = part.includes('@')
+				? `mailto:${part}`
+				: part.startsWith('http')
+					? part
+					: `https://${part}`;
+			ctx.doc.link(linkX, ctx.y - 3, partWidth, 4, { url });
+			if (i < contactParts.length - 1) {
+				linkX += partWidth + ctx.doc.getTextWidth(separator);
+			}
+		}
+		ctx.y += HEADER.CONTACT_HEIGHT;
+	}
+}
+
+/**
+ * @param {PdfContext} ctx
+ * @param {Record<string, any>} meta
+ */
+function renderSummary(ctx, meta) {
+	if (!meta.summary) return;
+	drawSectionHeader(ctx, 'Summary');
+	drawText(ctx, meta.summary, ctx.marginLeft, ctx.contentWidth);
+}
+
+/**
+ * @param {PdfContext} ctx
+ * @param {Record<string, any>} meta
+ */
+function renderExperience(ctx, meta) {
+	if (!meta.experience?.publish || !meta.experience.content?.length) return;
+	drawSectionHeader(ctx, 'Experience');
+	const jobs = published(meta.experience.content);
+
+	const pdfDateOpts = { separator: ' - ', monthFormat: /** @type {const} */ ('long') };
+
+	let isFirst = true;
+	for (const job of jobs) {
+		if (!isFirst) ctx.y += ENTRY.JOB_GAP;
+		isFirst = false;
+
+		const titleY = ctx.y;
+		ctx.doc.setFont('helvetica', 'bold');
+		ctx.doc.setFontSize(ctx.sz(FONT_RATIO.ENTRY_TITLE));
+		ctx.doc.setTextColor(...COLOR.BLACK);
+		ctx.doc.text(job.title, ctx.marginLeft, ctx.y);
+
+		drawRightText(ctx, formatDateRange(job.startTime, job.endTime, pdfDateOpts), titleY);
+		ctx.y += ENTRY.TITLE_TO_SUBTITLE;
+
+		const companyY = ctx.y;
+		ctx.doc.setFont('helvetica', 'normal');
+		ctx.doc.setFontSize(ctx.baseFontSize);
+		ctx.doc.setTextColor(...COLOR.DARK_GRAY);
+		ctx.doc.text(job.company, ctx.marginLeft, ctx.y);
+
+		drawRightText(ctx, job.location, companyY);
+		ctx.y += ENTRY.SUBTITLE_TO_CONTENT;
+
+		if (job.works?.length) {
+			for (const work of job.works) {
+				drawBullet(ctx, work, ctx.marginLeft + 2, ctx.contentWidth - 2);
+			}
+		}
+
+		if (job.projectGroups?.length) {
+			let isFirstGroup = true;
+			for (const group of job.projectGroups) {
+				if (!isFirstGroup) ctx.y += PROJECT_GROUP.GAP;
+				isFirstGroup = false;
+
+				ctx.doc.setFont('helvetica', 'bold');
+				ctx.doc.setFontSize(ctx.baseFontSize);
+				ctx.doc.setTextColor(...COLOR.BLACK);
+				ctx.doc.text(group.name, ctx.marginLeft, ctx.y);
+				ctx.y += PROJECT_GROUP.NAME_GAP;
+
+				if (group.works?.length) {
+					for (const work of group.works) {
+						drawBullet(ctx, work, ctx.marginLeft + 2, ctx.contentWidth - 2);
+					}
+				}
+			}
+		}
+	}
+}
+
+/**
+ * @param {PdfContext} ctx
+ * @param {Record<string, any>} meta
+ */
+function renderEducation(ctx, meta) {
+	if (!meta.education?.publish || !meta.education.content?.length) return;
+	drawSectionHeader(ctx, 'Education');
+	const edus = published(meta.education.content);
+
+	const pdfYearOpts = { separator: '-' };
+
+	/** @type {Map<string, typeof edus>} */
+	const grouped = new Map();
+	for (const edu of edus) {
+		const key = edu.institute;
+		if (!grouped.has(key)) grouped.set(key, []);
+		grouped.get(key)?.push(edu);
+	}
+
+	let isFirstGroup = true;
+	for (const [institute, entries] of grouped) {
+		if (!isFirstGroup) ctx.y += EDUCATION.GAP;
+		isFirstGroup = false;
+
+		const instY = ctx.y;
+		ctx.doc.setFont('helvetica', 'bold');
+		ctx.doc.setFontSize(ctx.sz(FONT_RATIO.ENTRY_TITLE));
+		ctx.doc.setTextColor(...COLOR.BLACK);
+		ctx.doc.text(institute, ctx.marginLeft, ctx.y);
+
+		drawRightText(ctx, entries[0].location, instY);
+		ctx.y += ENTRY.TITLE_TO_SUBTITLE;
+
+		for (const edu of entries) {
+			const degreeY = ctx.y;
+			ctx.doc.setFont('helvetica', 'italic');
+			ctx.doc.setFontSize(ctx.baseFontSize);
+			ctx.doc.setTextColor(...COLOR.DARK_GRAY);
+			ctx.doc.text(edu.title, ctx.marginLeft, ctx.y);
+
+			drawRightText(ctx, formatYearRange(edu.startTime, edu.endTime, pdfYearOpts), degreeY);
+			ctx.y += EDUCATION.LINE_HEIGHT;
+		}
+
+		const allWorks = entries.flatMap((edu) => edu.works ?? []);
+		if (allWorks.length) {
+			for (const work of allWorks) {
+				ctx.doc.setFont('helvetica', 'normal');
+				ctx.doc.setFontSize(ctx.baseFontSize);
+				ctx.doc.setTextColor(...COLOR.DARK_GRAY);
+				ctx.doc.text(work, ctx.marginLeft, ctx.y);
+				ctx.y += EDUCATION.LINE_HEIGHT;
+			}
+		}
+
+		const allCourseworks = entries.flatMap((edu) => edu.courseworks ?? []);
+		if (allCourseworks.length) {
+			const courseworkText = 'Relevant coursework: ' + allCourseworks.join(', ');
+			ctx.doc.setFont('helvetica', 'normal');
+			ctx.doc.setFontSize(ctx.baseFontSize);
+			ctx.doc.setTextColor(...COLOR.DARK_GRAY);
+			const lines = ctx.doc.splitTextToSize(courseworkText, ctx.contentWidth);
+			for (const line of lines) {
+				ctx.doc.text(line, ctx.marginLeft, ctx.y);
+				ctx.y += EDUCATION.LINE_HEIGHT;
+			}
+		}
+	}
+}
+
+/**
+ * @param {PdfContext} ctx
+ * @param {Record<string, any>} meta
+ */
+function renderSkills(ctx, meta) {
+	if (!meta.skills?.publish || !meta.skills.content?.length) return;
+	drawSectionHeader(ctx, 'Skills');
+	for (const skill of published(meta.skills.content)) {
+		if (!skill.description) continue;
+		drawLabeledLine(ctx, `${skill.title}: `, skill.description);
+	}
+}
+
+/**
+ * @param {PdfContext} ctx
+ * @param {Record<string, any>} meta
+ */
+function renderInterests(ctx, meta) {
+	if (!meta.interests?.publish || !meta.interests.content?.length) return;
+	const interests = published(meta.interests.content);
+	if (!interests.length) return;
+	drawLabeledLine(ctx, 'Interests/Hobbies: ', interests.map((i) => i.title).join(', '));
+}
+
+// ── Main entry point ──
 
 /**
  * @param {Record<string, any>} meta - Resume metadata from about.md frontmatter
  * @param {object} [options]
- * @param {number} [options.baseFontSize] - Base font size in pt (default 9)
+ * @param {number} [options.baseFontSize] - Base font size in pt (default 11)
  */
 export function generateResumePdf(meta, options = {}) {
 	const baseFontSize = options.baseFontSize ?? 11;
@@ -59,386 +368,30 @@ export function generateResumePdf(meta, options = {}) {
 	const contentWidth = pageWidth - marginLeft - marginRight;
 	const maxY = pageHeight - marginBottom;
 
-	let y = marginTop;
+	/** @type {PdfContext} */
+	const ctx = {
+		doc,
+		y: marginTop,
+		baseFontSize,
+		marginLeft,
+		marginRight,
+		pageWidth,
+		contentWidth,
+		sz: (/** @type {number} */ ratio) => baseFontSize * ratio
+	};
 
-	/** @type {[number, number, number]} */
-	const TEAL = [0, 151, 167];
-	/** @type {[number, number, number]} */
-	const BLACK = [0, 0, 0];
-	/** @type {[number, number, number]} */
-	const DARK_GRAY = [51, 51, 51];
+	renderHeader(ctx, meta);
+	renderSummary(ctx, meta);
+	renderExperience(ctx, meta);
+	renderEducation(ctx, meta);
+	renderSkills(ctx, meta);
+	renderInterests(ctx, meta);
 
-	// Font size helpers relative to base
-	const sz = (/** @type {number} */ ratio) => baseFontSize * ratio;
-
-	// ── Spacing constants (mm) ──
-	const SECTION_SPACE_ABOVE = 6;
-	const SECTION_RULE_GAP = 2;
-	const SECTION_SPACE_BELOW = 4;
-	const JOB_GAP = 3;
-	const PROJECT_GROUP_GAP = 0;
-	const BULLET_GAP = 1;
-	const EDUCATION_GAP = 1.5;
-	const TITLE_TO_SUBTITLE = 4;
-	const SUBTITLE_TO_CONTENT = 4.5;
-	const SKILL_LINE_HEIGHT = 4.5;
-	const LINE_HEIGHT = 1.45;
-
-	// ── Name ──
-	doc.setFont('helvetica', 'bold');
-	doc.setFontSize(sz(2.4));
-	doc.setTextColor(...BLACK);
-	doc.text(meta.title, marginLeft, y + 6);
-	y += 11;
-
-	// ── Contact line ──
-	const contactParts = [];
-	if (meta.email) contactParts.push(meta.email);
-	if (meta.website) contactParts.push(meta.website);
-	if (meta.github) contactParts.push(meta.github);
-
-	if (contactParts.length) {
-		doc.setFont('helvetica', 'normal');
-		doc.setFontSize(sz(0.89));
-		doc.setTextColor(...TEAL);
-		const separator = '  \u2022  ';
-		const contactLine = contactParts.join(separator);
-		doc.text(contactLine, marginLeft, y);
-		// Add clickable links
-		let linkX = marginLeft;
-		for (let i = 0; i < contactParts.length; i++) {
-			const part = contactParts[i];
-			const partWidth = doc.getTextWidth(part);
-			const url = part.includes('@')
-				? `mailto:${part}`
-				: part.startsWith('http')
-					? part
-					: `https://${part}`;
-			doc.link(linkX, y - 3, partWidth, 4, { url });
-			if (i < contactParts.length - 1) {
-				linkX += partWidth + doc.getTextWidth(separator);
-			}
-		}
-		y += 2;
-	}
-
-	/**
-	 * Draw a section header with a horizontal rule
-	 * @param {string} title
-	 */
-	function drawSectionHeader(title) {
-		y += SECTION_SPACE_ABOVE;
-		doc.setFont('helvetica', 'bold');
-		doc.setFontSize(sz(1.56));
-		doc.setTextColor(...BLACK);
-		doc.text(title, marginLeft, y);
-		y += SECTION_RULE_GAP;
-		doc.setDrawColor(0, 0, 0);
-		doc.setLineWidth(0.3);
-		doc.line(marginLeft, y, pageWidth - marginRight, y);
-		y += SECTION_SPACE_BELOW;
-	}
-
-	/**
-	 * Draw wrapped text and advance y
-	 * @param {string} text
-	 * @param {number} x
-	 * @param {number} maxWidth
-	 * @param {object} [opts]
-	 * @param {'normal'|'bold'|'italic'|'bolditalic'} [opts.fontStyle]
-	 * @param {number} [opts.fontSize] - in pt
-	 * @param {[number, number, number]} [opts.color]
-	 * @param {number} [opts.lineHeight] - multiplier
-	 */
-	function drawText(text, x, maxWidth, opts = {}) {
-		const {
-			fontStyle = 'normal',
-			fontSize = baseFontSize,
-			color = DARK_GRAY,
-			lineHeight = LINE_HEIGHT
-		} = opts;
-		doc.setFont('helvetica', fontStyle);
-		doc.setFontSize(fontSize);
-		doc.setTextColor(...color);
-		const lines = doc.splitTextToSize(text, maxWidth);
-		const lh = (fontSize * lineHeight * 25.4) / 72; // pt to mm
-		for (const line of lines) {
-			doc.text(line, x, y);
-			y += lh;
-		}
-	}
-
-	/**
-	 * Draw a bullet point item
-	 * @param {string} text
-	 * @param {number} x - left edge for the bullet
-	 * @param {number} maxWidth
-	 */
-	function drawBullet(text, x, maxWidth) {
-		const bulletIndent = 4;
-		// Draw bullet dot
-		doc.setFillColor(...DARK_GRAY);
-		doc.circle(x + 1.2, y - 0.8, 0.6, 'F');
-		// Draw text
-		drawText(text, x + bulletIndent, maxWidth - bulletIndent, {
-			fontSize: baseFontSize,
-			color: DARK_GRAY
-		});
-		y += BULLET_GAP;
-	}
-
-	/**
-	 * Draw right-aligned text
-	 * @param {string} text
-	 * @param {number} atY
-	 * @param {object} [opts]
-	 * @param {'normal'|'bold'} [opts.fontStyle]
-	 * @param {number} [opts.fontSize]
-	 * @param {[number, number, number]} [opts.color]
-	 */
-	function drawRightText(text, atY, opts = {}) {
-		const { fontStyle = 'normal', fontSize = baseFontSize, color = DARK_GRAY } = opts;
-		doc.setFont('helvetica', fontStyle);
-		doc.setFontSize(fontSize);
-		doc.setTextColor(...color);
-		doc.text(text, pageWidth - marginRight, atY, { align: 'right' });
-	}
-
-	// ── Summary ──
-	if (meta.summary) {
-		drawSectionHeader('Summary');
-		drawText(meta.summary, marginLeft, contentWidth, {
-			fontSize: baseFontSize,
-			color: DARK_GRAY
-		});
-	}
-
-	// ── Experience ──
-	if (meta.experience?.publish && meta.experience.content?.length) {
-		drawSectionHeader('Experience');
-		const jobs = published(meta.experience.content);
-		for (let j = 0; j < jobs.length; j++) {
-			const job = jobs[j];
-			if (j > 0) y += JOB_GAP;
-
-			// Job title and date range on same line
-			const titleY = y;
-			doc.setFont('helvetica', 'bold');
-			doc.setFontSize(sz(1.11));
-			doc.setTextColor(...BLACK);
-			doc.text(job.title, marginLeft, y);
-
-			// Date range right-aligned
-			drawRightText(formatDateRange(job.startTime, job.endTime), titleY, {
-				fontSize: baseFontSize,
-				color: DARK_GRAY
-			});
-			y += TITLE_TO_SUBTITLE;
-
-			// Company and location on same line
-			const companyY = y;
-			doc.setFont('helvetica', 'normal');
-			doc.setFontSize(baseFontSize);
-			doc.setTextColor(...DARK_GRAY);
-			doc.text(job.company, marginLeft, y);
-
-			drawRightText(job.location, companyY, {
-				fontSize: baseFontSize,
-				color: DARK_GRAY
-			});
-			y += SUBTITLE_TO_CONTENT;
-
-			// Direct works
-			if (job.works?.length) {
-				for (const work of job.works) {
-					drawBullet(work, marginLeft + 2, contentWidth - 2);
-				}
-			}
-
-			// Project groups
-			if (job.projectGroups?.length) {
-				for (let g = 0; g < job.projectGroups.length; g++) {
-					const group = job.projectGroups[g];
-					if (g > 0) y += PROJECT_GROUP_GAP;
-
-					// Group name
-					doc.setFont('helvetica', 'bold');
-					doc.setFontSize(baseFontSize);
-					doc.setTextColor(...BLACK);
-					doc.text(group.name, marginLeft, y);
-					y += 4.5;
-
-					if (group.works?.length) {
-						for (const work of group.works) {
-							drawBullet(work, marginLeft + 2, contentWidth - 2);
-						}
-					}
-				}
-			}
-		}
-	}
-
-	// ── Education (grouped by institute) ──
-	if (meta.education?.publish && meta.education.content?.length) {
-		drawSectionHeader('Education');
-		const edus = published(meta.education.content);
-
-		// Group by institute, preserving order of first appearance
-		/** @type {Map<string, typeof edus>} */
-		const grouped = new Map();
-		for (const edu of edus) {
-			const key = edu.institute;
-			if (!grouped.has(key)) grouped.set(key, []);
-			grouped.get(key)?.push(edu);
-		}
-
-		let groupIdx = 0;
-		for (const [institute, entries] of grouped) {
-			if (groupIdx > 0) y += EDUCATION_GAP;
-
-			// Institute name and location (from first entry)
-			const instY = y;
-			doc.setFont('helvetica', 'bold');
-			doc.setFontSize(sz(1.11));
-			doc.setTextColor(...BLACK);
-			doc.text(institute, marginLeft, y);
-
-			drawRightText(entries[0].location, instY, {
-				fontSize: baseFontSize,
-				color: DARK_GRAY
-			});
-			y += TITLE_TO_SUBTITLE;
-
-			// Each degree under this institute
-			for (let d = 0; d < entries.length; d++) {
-				const edu = entries[d];
-
-				const degreeY = y;
-				doc.setFont('helvetica', 'italic');
-				doc.setFontSize(baseFontSize);
-				doc.setTextColor(...DARK_GRAY);
-				doc.text(edu.title, marginLeft, y);
-
-				drawRightText(formatYearRange(edu.startTime, edu.endTime), degreeY, {
-					fontSize: baseFontSize,
-					color: DARK_GRAY
-				});
-				y += 3.5;
-			}
-
-			// Grouped works from all entries under this institute
-			const allWorks = entries.flatMap((edu) => edu.works ?? []);
-			if (allWorks.length) {
-				for (const work of allWorks) {
-					doc.setFont('helvetica', 'normal');
-					doc.setFontSize(baseFontSize);
-					doc.setTextColor(...DARK_GRAY);
-					doc.text(work, marginLeft, y);
-					y += 3.5;
-				}
-			}
-
-			// Grouped courseworks from all entries under this institute
-			const allCourseworks = entries.flatMap((edu) => edu.courseworks ?? []);
-			if (allCourseworks.length) {
-				const label = 'Relevant coursework: ';
-				doc.setFont('helvetica', 'normal');
-				doc.setFontSize(baseFontSize);
-				doc.setTextColor(...DARK_GRAY);
-				const courseworkText = label + allCourseworks.join(', ');
-				const lines = doc.splitTextToSize(courseworkText, contentWidth);
-				for (const line of lines) {
-					doc.text(line, marginLeft, y);
-					y += 3.5;
-				}
-			}
-
-			groupIdx++;
-		}
-	}
-
-	// ── Skills ──
-	if (meta.skills?.publish && meta.skills.content?.length) {
-		drawSectionHeader('Skills');
-		const skills = published(meta.skills.content);
-		for (const skill of skills) {
-			if (!skill.description) continue;
-			// "Category: value, value, value" format
-			const label = `${skill.title}: `;
-			doc.setFont('helvetica', 'bold');
-			doc.setFontSize(baseFontSize);
-			doc.setTextColor(...BLACK);
-
-			const labelWidth = doc.getTextWidth(label);
-
-			// Check if the full line fits or needs wrapping
-			doc.setFont('helvetica', 'normal');
-			const descWidth = doc.getTextWidth(skill.description);
-			const totalWidth = labelWidth + descWidth;
-
-			if (totalWidth <= contentWidth) {
-				// Single line
-				doc.setFont('helvetica', 'bold');
-				doc.text(label, marginLeft, y);
-				doc.setFont('helvetica', 'normal');
-				doc.setTextColor(...DARK_GRAY);
-				doc.text(skill.description, marginLeft + labelWidth, y);
-				y += SKILL_LINE_HEIGHT;
-			} else {
-				doc.setFont('helvetica', 'bold');
-				doc.text(label, marginLeft, y);
-				doc.setFont('helvetica', 'normal');
-				doc.setTextColor(...DARK_GRAY);
-				const descLines = doc.splitTextToSize(skill.description, contentWidth - labelWidth);
-				doc.text(descLines[0], marginLeft + labelWidth, y);
-				y += SKILL_LINE_HEIGHT;
-				if (descLines.length > 1) {
-					const remainingText = descLines.slice(1).join(' ');
-					const rewrapped = doc.splitTextToSize(remainingText, contentWidth);
-					for (const line of rewrapped) {
-						doc.text(line, marginLeft, y);
-						y += SKILL_LINE_HEIGHT;
-					}
-				}
-			}
-		}
-	}
-
-	// ── Interests ──
-	if (meta.interests?.publish && meta.interests.content?.length) {
-		const interests = published(meta.interests.content);
-		if (interests.length) {
-			const label = 'Interests/Hobbies: ';
-			const values = interests.map((i) => i.title).join(', ');
-
-			doc.setFont('helvetica', 'bold');
-			doc.setFontSize(baseFontSize);
-			doc.setTextColor(...BLACK);
-			const labelWidth = doc.getTextWidth(label);
-			doc.text(label, marginLeft, y);
-
-			doc.setFont('helvetica', 'normal');
-			doc.setTextColor(...DARK_GRAY);
-			const descLines = doc.splitTextToSize(values, contentWidth - labelWidth);
-			doc.text(descLines[0], marginLeft + labelWidth, y);
-			y += SKILL_LINE_HEIGHT;
-			if (descLines.length > 1) {
-				const remainingText = descLines.slice(1).join(' ');
-				const rewrapped = doc.splitTextToSize(remainingText, contentWidth);
-				for (const line of rewrapped) {
-					doc.text(line, marginLeft, y);
-					y += SKILL_LINE_HEIGHT;
-				}
-			}
-		}
-	}
-
-	// Check if content overflows and auto-scale if needed
-	if (y > maxY && baseFontSize > 6) {
+	// Auto-scale: retry with smaller font if content overflows
+	if (ctx.y > maxY && baseFontSize > 6) {
 		return generateResumePdf(meta, { baseFontSize: baseFontSize - 0.5 });
 	}
 
-	// Generate filename from title
 	const filename = meta.title
 		? `${meta.title.replace(/\s+/g, '_')}_Resume.pdf`
 		: 'Resume.pdf';
