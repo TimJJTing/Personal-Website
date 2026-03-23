@@ -1,13 +1,50 @@
 <script>
+	import { isMobile } from '$lib/utils/device';
+
 	let { meta } = $props();
-	let filename = $derived(
-		meta.title ? `${meta.title.replace(/\s+/g, '_')}_Resume` : 'Resume'
-	);
+	let filename = $derived(meta.title ? `${meta.title.replace(/\s+/g, '_')}_Resume` : 'Resume');
+
+	/**
+	 * @param { MouseEvent } event
+	 */
+	async function handleClick(event) {
+		event.preventDefault();
+		const url = `/about/${filename}.pdf`;
+		const pdfFilename = `${filename}.pdf`;
+
+		// Fetch the PDF as a File for both share and download paths
+		const response = await fetch(url);
+		const blob = await response.blob();
+		const file = new File([blob], pdfFilename, { type: 'application/pdf' });
+
+		// Check if Web Share API is available and supports file sharing
+		if (isMobile() && navigator.share && navigator.canShare?.({ files: [file] })) {
+			try {
+				await navigator.share({ files: [file], title: pdfFilename });
+				return;
+			} catch (shareError) {
+				// @ts-ignore (shareError as Error)
+				if (shareError.name === 'AbortError') {
+					// User cancelled
+					return;
+				}
+				// Share failed, fall through to download
+			}
+		}
+
+		// Fallback: standard download for desktop or when Web Share is unavailable
+		const link = document.createElement('a');
+		link.download = pdfFilename;
+		link.href = URL.createObjectURL(blob);
+		link.click();
+		URL.revokeObjectURL(link.href);
+	}
 </script>
 
 <a
 	href="/about/{filename}.pdf"
 	download="{filename}.pdf"
+	onclick={handleClick}
 	class="group/btn inline-flex items-center gap-2 text-sm font-medium text-neutral-500 transition-colors duration-300 hover:text-neutral-900 hover:no-underline dark:text-neutral-400 dark:hover:text-neutral-100"
 >
 	<svg
