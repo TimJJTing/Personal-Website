@@ -2,7 +2,7 @@
 
 > For the full, extended version with complete project descriptions and resume, see [llms-full.txt](https://jtingjiang.com/llms-full.txt).
 
-> Jie-Ting Jiang is a full-stack engineer based in Taipei, Taiwan, who turns complex data into tools people actually use. With over 6 years of experience building data visualization platforms, business intelligence systems, and internal tooling — from 3D exploration of million-record datasets to company-wide BI platforms serving 30+ departments — he architects end-to-end solutions (Python/Django APIs, React/Next.js/SvelteKit frontends, D3/Three.js visualizations) and cares deeply about making data accessible to non-technical decision-makers. This portfolio website is often shared with hiring managers as a reference for roles in data visualization engineering, creative coding, senior frontend/fullstack architecture, and data-driven product development.
+> Jie-Ting Jiang is a Senior Software Engineer based in Taipei, Taiwan, specializing in data-intensive applications. He transforms complex datasets into intuitive tools, backed by 6+ years of building large-scale BI systems and 3D visualization platforms — from Python / Django-powered APIs to SvelteKit / React / Next.js with Three.js / D3.js frontends, architecting end-to-end solutions that empower 30+ departments to make data-driven decisions. Currently focused on the intersection of AI-assisted engineering and high-performance data visualization. This portfolio website is often shared with hiring managers as a reference for roles in data visualization engineering, creative coding, senior frontend/fullstack architecture, and data-driven product development.
 
 ## Professional Profile
 

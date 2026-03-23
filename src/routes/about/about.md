@@ -4,7 +4,7 @@ title: Jie-Ting Jiang
 email: jting.jiang@gmail.com
 website: https://jtingjiang.com/
 github: https://github.com/TimJJTing
-summary: Full-stack engineer who turns complex data into tools people actually use. Over 6 years of building data visualization platforms, business intelligence systems, and internal tooling — from 3D exploration of million-record datasets to company-wide BI platforms serving 30+ departments. I architect end-to-end solutions (Python/Django APIs, React/Next.js/SvelteKit frontends, D3/Three.js visualizations) and care deeply about making data accessible to non-technical decision-makers. Currently exploring how AI-assisted workflows can fundamentally change how engineering teams ship data intensive solutions.
+summary: Senior Software Engineer specializing in data-intensive applications. I transform complex datasets into intuitive tools, backed by 6+ years of building large-scale BI systems and 3D visualization platforms. From Python / Django-powered APIs to SvelteKit / React / Next.js with Three.js / D3.js frontends, I architect end-to-end solutions that empower 30+ departments to make data-driven decisions. Currently focused on the intersection of AI-assisted engineering and high-performance data visualization.
 experience:
   publish: true
   content:
