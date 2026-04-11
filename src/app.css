@@ -7,6 +7,22 @@
 
 article {
 	@apply prose md:prose-lg prose-img:rounded-xl prose-figure:mx-auto lg:prose-xl xl:prose-2xl prose-neutral dark:prose-invert max-w-none;
+
+	:where(:not(pre)) > :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+		background-color: rgba(0, 0, 0, 0.05);
+		padding: 0.15em 0.35em;
+		border-radius: 0.25em;
+		font-size: 0.875em;
+	}
+
+	:is(.dark *) :where(:not(pre)) > :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+		background-color: rgba(255, 255, 255, 0.1);
+	}
+
+	:where(code):not(:where([class~='not-prose'], [class~='not-prose'] *))::before,
+	:where(code):not(:where([class~='not-prose'], [class~='not-prose'] *))::after {
+		content: none;
+	}
 }
 
 /*

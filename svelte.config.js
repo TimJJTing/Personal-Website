@@ -2,6 +2,8 @@ import { mdsvex } from 'mdsvex';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte'
 import mdsvexConfig from './mdsvex.config.js';
 import adapter from '@sveltejs/adapter-netlify';
+import { autoImportInstagram } from './auto-import-instagram.js';
+import { autoImportYouTube } from './auto-import-youtube.js';
 
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -32,7 +34,7 @@ const config = {
 		}
 	},
 	extensions: ['.svelte', ...mdsvexConfig.extensions],
-	preprocess: [vitePreprocess(), mdsvex(mdsvexConfig)]
+	preprocess: [autoImportInstagram, autoImportYouTube, vitePreprocess(), mdsvex(mdsvexConfig)]
 };
 
 export default config;
