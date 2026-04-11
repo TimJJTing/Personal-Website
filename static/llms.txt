@@ -59,6 +59,7 @@ Jie-Ting combines deep frontend engineering craft with a genuine passion for dat
 
 - [Data is Beautiful](https://jtingjiang.com/articles/data-is-beautiful): An introductory talk on data visualization principles and practices, originally presented as a guest lecture for college students. Covers why visualization matters and how to approach it thoughtfully.
 - [A Brief Introduction to Common Database Models & Graph Databases](https://jtingjiang.com/articles/a-brief-introduction-to-common-database-models-graph-databases): A technical overview of database paradigms including relational, document, and graph models — shared as an internal knowledge-sharing session with engineering colleagues.
+- [React Untersuchungen](https://jtingjiang.com/articles/react-untersuchungen): An essay examining React and Next.js through the lens of Ludwig Wittgenstein's philosophy, exploring whether the framework solves problems or creates them.
 
 ## Links
 

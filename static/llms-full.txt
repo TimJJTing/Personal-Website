@@ -161,6 +161,12 @@ A technical overview of database paradigms including relational, document, and g
 
 ---
 
+### React Untersuchungen (2026)
+
+An essay examining React and Next.js through the lens of Ludwig Wittgenstein's philosophy, exploring whether the framework solves problems or creates them.
+
+---
+
 ## Links
 
 - [LinkedIn](https://www.linkedin.com/in/jie-ting-jiang/)
