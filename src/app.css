@@ -6,23 +6,34 @@
 @custom-variant dark (&:is(.dark *));
 
 article {
-	@apply prose md:prose-lg prose-img:rounded-xl prose-figure:mx-auto lg:prose-xl xl:prose-2xl prose-neutral dark:prose-invert max-w-none;
+	@apply prose prose-img:rounded-xl prose-figure:mx-auto prose-neutral dark:prose-invert max-w-none;
 
 	:where(:not(pre)) > :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-		background-color: rgba(0, 0, 0, 0.05);
+		background-color: rgba(255, 255, 255, 0.1);
 		padding: 0.15em 0.35em;
 		border-radius: 0.25em;
 		font-size: 0.875em;
-	}
-
-	:is(.dark *) :where(:not(pre)) > :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-		background-color: rgba(255, 255, 255, 0.1);
+		font-weight: 500;
+		color: #8cccd5;
 	}
 
 	:where(code):not(:where([class~='not-prose'], [class~='not-prose'] *))::before,
 	:where(code):not(:where([class~='not-prose'], [class~='not-prose'] *))::after {
 		content: none;
 	}
+}
+
+/* Shiki syntax highlighting — dual theme via CSS variables */
+html.dark .shiki,
+html.dark .shiki span {
+	color: var(--shiki-dark) !important;
+	background-color: var(--shiki-dark-bg) !important;
+}
+
+html:not(.dark) .shiki,
+html:not(.dark) .shiki span {
+	color: var(--shiki-light) !important;
+	background-color: var(--shiki-light-bg) !important;
 }
 
 /*
@@ -46,11 +57,6 @@ article {
 a {
 	@apply no-underline;
 	@apply hover:underline;
-}
-
-p,
-li {
-	@apply text-lg;
 }
 
 /* Custom Scrollbar for WebKit (Chrome, Safari, Edge) */
