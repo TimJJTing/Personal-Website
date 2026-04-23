@@ -52,7 +52,7 @@ experience:
             - Built an automated geospatial analysis tool with the analytics team that reduced site assessment for battery-swapping stations from days to seconds, enabling business development teams to evaluate locations without analyst support.
         - name: Architecture Modernization
           works:
-            - Rearchitected a monolithic decision support system into Python APIs and microservices, letting data scientists deploy business logic directly instead of handing specs to engineers.
+            - Rearchitected a monolithic decision support system into a set of Python-based APIs and microservices, streamlining the integration of business logic from data scientists and analysts. Eliminated translation delays and enhanced flexibility in debugging, testing, deployment, and management.
       publish: true
 education:
   publish: true
