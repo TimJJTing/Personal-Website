@@ -4,7 +4,7 @@ title: Jie-Ting Jiang
 email: jting.jiang@gmail.com
 website: https://jtingjiang.com/
 github: https://github.com/TimJJTing
-summary: Senior Software Engineer specializing in data-intensive applications. I transform complex datasets into intuitive tools, backed by 6+ years of building large-scale BI systems and 3D visualization platforms. From Python / Django-powered APIs to SvelteKit / React / Next.js with Three.js / D3.js frontends, I architect end-to-end solutions that empower 30+ departments to make data-driven decisions. Currently focused on the intersection of AI-assisted engineering and high-performance data visualization.
+summary: 'Senior Software Engineer specializing in data-intensive applications. I transform complex datasets into intuitive tools, backed by 6+ years of building BI systems and 3D visualization platforms. Architected solutions that empower 30+ departments to make data-driven decisions. Comfortable across the stack: Python/Django APIs, React and Svelte frontends, Three.js and D3 for visualization. Currently focused on the intersection of AI-assisted engineering and high-performance data visualization.'
 experience:
   publish: true
   content:
@@ -32,12 +32,12 @@ experience:
       projectGroups:
         - name: Business Intelligence Platform & Data Visualization
           works:
-            - Built and scaled a BI platform adopted by 30+ departments, making decision science accessible org-wide — from self-serve dashboards to advanced exploratory tools.
-            - Designed a 3D customer exploration tool (Three.js + Svelte) for querying and visualizing 1M+ records, optimized to run smoothly on average hardware; built a parallel asset management app for 1M+ battery assets.
+            - Built and scaled a BI platform adopted by 30+ departments, covering self-serve dashboards through custom exploratory tools.
+            - Designed a 3D customer exploration tool (Three.js + Svelte) for querying 1M+ records in the browser, optimized for mid-range laptops. Built a parallel asset tracker for 1M+ battery assets.
         - name: Platform & Developer Experience
           works:
             - Designed a standardized API framework for data-intensive applications with data engineers, enabling rapid development of exploratory analysis and decision science tools.
-            - Built shared component libraries (UI, charts, maps) in React and Svelte with designers, accelerating app development and ensuring visual consistency across the platform.
+            - Built shared component libraries (UI, charts, maps, hooks) in React and Svelte with designers, accelerating development and ensuring visual consistency across 5 apps in the platform.
       publish: true
     - title: Data Visualization Engineer
       startTime: 2019-03-01T00:00:00.000Z
@@ -48,11 +48,11 @@ experience:
       projectGroups:
         - name: Executive Dashboards & Geospatial Analysis
           works:
-            - Built full-stack visualization solutions for executives to monitor 2,500+ GoStations with regional and temporal drill-downs (daily/weekly/monthly).
-            - Developed an automated geospatial analysis tool with data analysts that cut GoStation site assessment from days to seconds — a 95% reduction in decision turnaround.
+            - Built executive dashboards to monitor KPIs of 2,500+ battery-swapping stations with regional and temporal drill-downs.
+            - Built an automated geospatial analysis tool with the analytics team that reduced site assessment for battery-swapping stations from days to seconds, enabling business development teams to evaluate locations without analyst support.
         - name: Architecture Modernization
           works:
-            - Rearchitected a monolithic decision support system into Python-based APIs and microservices, enabling data scientists to ship business logic directly without translation delays — improving debugging, testing, and deployment flexibility.
+            - Rearchitected a monolithic decision support system into Python APIs and microservices, letting data scientists deploy business logic directly instead of handing specs to engineers.
       publish: true
 education:
   publish: true
@@ -94,17 +94,20 @@ education:
 skills:
   publish: true
   content:
-    - title: Programming Languages / Frameworks
-      description: Python, JavaScript, C++, SQL, Golang, Django, React, Svelte, Node.js, Express.js
+    - title: Backend
+      description: Python, Django, Node.js, Express, Go, SQL
+      publish: true
+    - title: Frontend
+      description: JavaScript/TypeScript, React/Next.js, Svelte/SvelteKit
       publish: true
     - title: Data Visualization
-      description: D3.js, Three.js, Deck.gl, Google Maps JS API, Mapbox GL JS
+      description: D3.js, Three.js, Deck.gl, Mapbox GL JS, Google Maps JS API
       publish: true
-    - title: DevOps
-      description: GitLab CI, Docker, Kubernetes
+    - title: Infrastructure
+      description: Docker, Kubernetes, GitLab CI
       publish: true
-    - title: Language Skills
-      description: English (Full Professional Proficiency), Mandarin Chinese (Native), Taiwanese (Native), Deutsch (Niveau B1)
+    - title: Languages
+      description: English (professional), Mandarin (native), Taiwanese (native), German (B1)
       publish: true
 interests:
   publish: true
