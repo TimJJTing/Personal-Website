@@ -66,6 +66,16 @@ Infographics, Visual Journalism, Data Humanism, New Media Arts, Specialty Coffee
 
 ## Selected Works — Full Descriptions
 
+### Claudesay (2026)
+**Technologies:** Bash, Claude Code Plugin API
+**Links:** [Article](https://jtingjiang.com/works/claudesay) | [Source](https://github.com/TimJJTing/Claudesay)
+
+If you've spent time in a terminal, you've probably run `cowsay` at least once — the old Unix utility that prints a message inside a speech bubble with a cow underneath. It does nothing useful. That's the point.
+
+`claudesay` is cut from the same cloth. It's a plugin for Claude Code that gives the AI assistant a small ASCII cat that reacts to whatever Claude is doing. When Claude edits a file, the cat holds a wrench. When it searches for something, the cat holds a magnifying glass. When Claude finishes a reply and has something to say, it shows up in a speech bubble underneath.
+
+---
+
 ### Escaping Flatland (2024)
 **Technologies:** Three.js, Svelte, SvelteKit, Octree, GLSL Shaders, LOD
 **Links:** [Demo](https://escaping-flatland.netlify.app/) | [Source](https://github.com/TimJJTing/Escaping-Flatland) | [Slides](https://timjjting.github.io/Escaping-Flatland-Slides/)

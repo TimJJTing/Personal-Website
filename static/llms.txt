@@ -47,6 +47,7 @@ Jie-Ting combines deep frontend engineering craft with a genuine passion for dat
 
 ## Selected Works
 
+- [Claudesay](https://jtingjiang.com/works/claudesay): A Claude Code plugin that renders conversational replies as ASCII character speech bubbles in the terminal. Built with Bash, it uses Claude's hook system to intercept conversational replies and render them as ASCII character speech bubbles in the terminal. It also includes a small ASCII cat that reacts to Claude's actions.
 - [Escaping Flatland](https://jtingjiang.com/works/escaping-flatland): A technical deep-dive into rendering 1M+ data points at interactive framerates in 3D space. Built with Three.js + Svelte, this project demonstrates Octree-based spatial indexing and LOD techniques for large-scale data visualization. Inspired by Edward Tufte's call to escape the flatland of 2D displays. Includes a live demo and presentation slides.
 - [YouBike Route Explorer](https://jtingjiang.com/works/youbike-route-explorer): An interactive geospatial visualization tool that maps the urban mobility patterns of Taipei's public bike-sharing system. Reveals usage patterns, popular routes, and deployment strategy insights through exploratory data visualization. Built with Deck.gl.
 - [Task Lineage Generator](https://jtingjiang.com/works/task-lineage-generator): A utility for generating task lineage diagrams, designed to help teams visualize and understand complex task dependencies and data pipeline workflows.
