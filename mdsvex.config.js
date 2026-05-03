@@ -3,6 +3,7 @@ import { fileURLToPath } from "url";
 import remarkFootnotes from "remark-footnotes";
 import { escapeSvelte } from "mdsvex";
 import { createHighlighter } from "shiki";
+import { rehypeEnhancedImg } from "./src/lib/rehype-plugins/rehype-enhanced-img.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -28,7 +29,7 @@ const config = {
 		_: path_to_layout + '/default.svelte'
 	},
 	remarkPlugins: [remarkFootnotes],
-	rehypePlugins: [],
+	rehypePlugins: [rehypeEnhancedImg],
 	highlight: {
 		highlighter: async (code, lang = "text") => {
 			// Skip mermaid blocks — let downstream renderers handle them

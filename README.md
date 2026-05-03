@@ -62,6 +62,7 @@ src/
 │   │   └── resume/       # Resume-specific components (download button)
 │   ├── markdown-layouts/ # Svelte layout wrappers for mdsvex content (article, work, links, default)
 │   ├── attachments/      # Svelte action utilities (e.g. portal)
+│   ├── rehype-plugins/   # Rehype plugins for mdsvex markdown processing (e.g. enhanced img)
 │   └── utils/
 │       └── resume/       # Resume PDF generation (consts, helpers, generate-pdf)
 └── routes/
