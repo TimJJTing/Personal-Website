@@ -12,7 +12,7 @@ const path_to_layout = join(__dirname, "./src/lib/markdown-layouts");
 // Initialize Shiki highlighter singleton (top-level await)
 const shikiHighlighter = await createHighlighter({
 	themes: ["github-dark", "github-light"],
-	langs: ["javascript", "typescript", "tsx", "python", "yaml", "shellscript", "text"],
+	langs: ["typescript", "tsx", "python", "yaml", "shellscript", "text", "glsl"],
 });
 
 const config = {
