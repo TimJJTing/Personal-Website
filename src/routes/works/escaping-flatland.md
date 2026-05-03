@@ -34,44 +34,43 @@ additionalLinks:
 
 ## Abstract
 
-This article is about "Escaping Flatland," a project that attempts to visualize n-dimensional datasets in 3D space for an immersive, sensory experience. Along the way, it tackles a set of genuinely hard engineering problems: how do you render a million data points smoothly in the browser? How do you add per-object visual effects without blowing the frame budget? And how do you wire all of this into a modern web framework cleanly?
+"Escaping Flatland" is a project that attempts to visualize n-dimensional datasets in 3D space for an immersive, sensory experience. The project addresses a set of genuinely hard engineering problems: how to render a million data points smoothly in the browser, how to apply per-object visual effects without exceeding the frame budget, and how to integrate all of this cleanly into a modern web framework.
 
-The implementation is built on Three.js and Octree, integrated into a SvelteKit application. This article walks through the motivation behind the project, the architectural decisions made along the way, and the specific techniques used to make it work at scale. It also reflects on how Three.js fits into a SvelteKit project, though [Threlte](https://threlte.xyz/) offers a more mature solution for this purpose.
+The implementation is built on Three.js and a spatial octree structure, integrated into a SvelteKit application. This article walks through the motivation behind the project, the architectural decisions made along the way, and the specific techniques used to make it work at scale. It also reflects on how Three.js fits into a SvelteKit project, though [Threlte](https://threlte.xyz/) offers a more mature solution for this purpose.
 
 ## Motivation
 
 > *Even though we navigate daily through a perceptual world of three dimensions… the world displayed on our information displays is caught up in the two dimensionality of the endless flatlands of paper and video screens… Escaping this flatland is the essential task of envisioning information — for all the interesting worlds that we seek to understand are inevitably and happily multivariate in nature. Not flatlands. (Tufte 1990)*
 
-Tufte wrote this over thirty years ago, and it still describes the default mode of data visualization today: charts on flat screens, points on flat axes. The flatland metaphor is apt because it is not just about aesthetics. It is about the number of variables you can encode in a single view, and therefore the complexity of the story you can tell.
+Tufte wrote this over thirty years ago, and it still describes the default mode of data visualization today: charts on flat screens, points on flat axes. The flatland metaphor is apt because the constraint is not merely aesthetic. The number of variables encodable in a single view determines the complexity of the story that can be told.
 
 In the real world, data rarely has just two or three dimensions. A dataset of physical measurements might include spatial coordinates, time, temperature, pressure, and a dozen other variables. On a flat plot, each additional variable requires a new axis, a new color scale, or a new panel, and at some point the representation falls apart under its own weight.
 
-A 3D space, rendered on screen, gives us one more spatial dimension to work with directly. But the more interesting gain is what comes with it: depth cues, perspective, rotation, and the ability to position the viewer inside the data itself. When you can zoom in until individual data points surround you like objects in a room, the relationship between variables becomes something you can sense and navigate rather than just read.
+A 3D space, rendered on screen, provides one additional spatial dimension to work with directly. The more interesting gain, however, is what comes with it: depth cues, perspective, rotation, and the ability to position the viewer inside the data itself. When the camera can zoom in until individual data points surround it like objects in a room, the relationship between variables becomes something to sense and navigate rather than merely read.
 
-Add interactivity, and the possibilities expand further. Zooming lets you inspect the macro structure of an entire dataset and then dive into a single cluster without switching views. The information density you can achieve is genuinely different from anything a static chart can offer.
+Adding interactivity expands the possibilities further. Zooming allows inspection of the macro structure of an entire dataset and navigation into a single cluster without switching views. The information density achievable in this way is genuinely different from anything a static chart can offer.
 
 That potential is what "Escaping Flatland" is trying to realize.
 
 ## Goal
 
-The goal is to provide an immersive data exploration experience that is qualitatively unlike conventional data visualization, where the viewer can feel embedded in the data rather than looking at it from a fixed distance.
+The goal is to provide an immersive data exploration experience that is qualitatively unlike conventional data visualization, where the viewer feels embedded in the data rather than observing it from a fixed distance.
 
-To be concrete about what that requires, the spec:
+Two concrete requirements define the scope:
 
 - **Render 1M data points smoothly**: A million points is the threshold where the browser's default rendering approaches start to break down. Reaching it without sacrificing frame rate requires deliberate engineering.
 - **Support zooming in and out for micro and macro views**: The experience should feel continuous. Zooming out should reveal the full shape of the dataset; zooming in should reveal individual points with enough detail to distinguish them.
-- **Allow hopping from one point to another when zoomed in**: At close range, a user should be able to move their focus from one data point to a neighboring one, treating each point as a place to stand rather than just a mark on a chart.
 
 ## The Stack
 
-For achieveing the goal, I built the project with [Three.js](https://threejs.org/), the most mature and widely adopted JavaScript 3D library for the browser. It sits at the right level of abstraction: low-level enough to expose the rendering pipeline directly when you need it, high-level enough that you are not writing raw WebGL for every object. For the application framework, [SvelteKit](https://kit.svelte.dev/) handles routing and component lifecycle, keeping the web layer clean while Three.js owns the rendering canvas.
+To achieve these goals, the project is built with [Three.js](https://threejs.org/), the most mature and widely adopted JavaScript 3D library for the browser. It sits at the right level of abstraction: low-level enough to expose the rendering pipeline directly when needed, high-level enough that raw WebGL is not required for every object. For the application framework, [SvelteKit](https://kit.svelte.dev/) handles routing and component lifecycle, keeping the web layer clean while Three.js owns the rendering canvas.
 
 ### Fundamental Blocks
 
-Before getting into what broke and how I fixed it, here is a quick map of the fundamental building blocks in any Three.js scene. Understanding these is useful context for the problems discussed later, since most of the performance challenges come down to how these pieces interact.
+Before addressing the performance challenges, it is useful to survey the fundamental building blocks of any Three.js scene. Most of the optimization work discussed later comes down to how these pieces interact.
 
 - **Scene**: the container that holds everything
-- **Objects**: meshes, points, lines; the things you actually see
+- **Objects**: meshes, points, lines; the visible geometry in the scene
 - **Camera**: the virtual viewpoint; where the user is standing and what direction they are looking
 - **Lights**: light sources that illuminate the scene; not all rendering modes need them, but they matter for realism
 - **Renderer**: the engine that takes all of the above and draws pixels to the screen each frame
@@ -115,9 +114,11 @@ animate();
 destroy();
 ```
 
+![Basic building blocks and lifecycle](/uploads/escaping-flatland-0.png)
+
 ### Interactivity via Raycasting
 
-In a standard web page, click and hover events come for free. In a 3D scene, the situation is more complex. A mouse position is just a 2D coordinate on screen, which by itself says nothing about which 3D object the cursor is over. The same screen position could map to dozens of objects at different depths in the scene.
+In a standard web page, click and hover events are handled automatically by the browser. In a 3D scene, the situation is more involved: a mouse position is only a 2D coordinate on screen, which by itself says nothing about which 3D object the cursor is over. The same screen position could map to dozens of objects at different depths in the scene.
 
 The solution is raycasting: cast a virtual ray from the camera through the cursor's screen position and collect all the scene objects it intersects, ordered by distance. The closest intersection is what the user is pointing at. Three.js provides a built-in [Raycaster](https://threejs.org/docs/#api/en/core/Raycaster) for this:
 
@@ -144,22 +145,24 @@ function onMouseMove(event: MouseEvent) {
 }
 ```
 
-This gives you hover and click detection on any object in the scene, regardless of how deep it is, using the same intuition as pointing at a physical object.
+![Interactivity via raycasting](/uploads/escaping-flatland-1.gif)
+
+This provides hover and click detection on any object in the scene, regardless of depth, using the same intuition as pointing at a physical object.
 
 ### Dynamic Visual Effects with GPU Shaders
 
-To encode additional dimensions of the dataset visually, we can apply dynamic effects to each data point. For instance, rotation speed might represent a variable's magnitude, while color encodes its category. The goal is to make multiple variables readable at a glance, without adding more axes.
+To encode additional dimensions of the dataset visually, dynamic effects can be applied to each data point. For instance, rotation speed might represent a variable's magnitude, while color encodes its category. The goal is to make multiple variables readable at a glance, without adding more axes.
 
 The challenge is doing this for a million points at 60 frames per second. A standard CPU-driven loop iterates over each point sequentially, updates it, and uploads the result to the GPU once per frame. At this scale, the loop itself becomes the bottleneck. The CPU is well suited for serial execution of complex logic, but it processes one operation at a time, and a million sequential updates is simply too much to finish within a 16-millisecond frame budget.
 
-The GPU is built on a different principle. It executes thousands of simple operations simultaneously, in parallel. If you can express your per-point logic as a short, stateless program, the GPU can apply it to every point in the scene at once. This is what shaders are for.
+The GPU is built on a different principle. It executes thousands of simple operations simultaneously, in parallel. When per-point logic can be expressed as a short, stateless program, the GPU applies it to every point in the scene at once. This is what shaders are for.
 
-WebGL exposes two stages of the rendering pipeline that you can write custom code for:
+WebGL exposes two stages of the rendering pipeline that accept custom code:
 
 - **Vertex shaders**: run once per vertex, control geometry and position
 - **Fragment shaders**: run once per pixel, control color and appearance
 
-These are written in GLSL, a C-like language that executes entirely on the GPU. A uniform like `u_time` that increments each frame lets you build animations that run at full GPU speed with no CPU involvement:
+These are written in GLSL, a C-like language that executes entirely on the GPU. A uniform such as `u_time`, incremented each frame, enables animations that run at full GPU speed without any CPU involvement:
 
 ```glsl
 // pseudo-code for the concept
@@ -172,9 +175,9 @@ void main() {
 }
 ```
 
-Sites like [Shadertoy](https://www.shadertoy.com/) are a good reference for what becomes possible when you fully embrace this model.
+Sites like [Shadertoy](https://www.shadertoy.com/) offer a useful reference for what becomes possible when this model is fully embraced.
 
-In my case, I implemented the [differential rotation](https://en.wikipedia.org/wiki/Differential_rotation) shader to create a Jupiter-like effect for each data point, where different latitudinal bands of the sphere rotate at different speeds, producing a swirling, organic visual.
+In this project, I implemented the [differential rotation](https://en.wikipedia.org/wiki/Differential_rotation) shader to create a Jupiter-like effect for each data point, where different latitudinal bands of the sphere rotate at different speeds, producing a swirling, organic visual.
 
 ```glsl
 // pseudo-code for the concept
@@ -214,11 +217,17 @@ void main() {
 }
 ```
 
+![Differential rotation](/uploads/escaping-flatland-12.gif)
+
 ### Selective Bloom
 
-The shader produces the right movement, but aesthetically something is still missing. In space photography and rendered 3D scenes, luminous objects bleed light into the space around them, producing a soft glow rather than a hard edge. A planet viewed through a telescope does not look like a crisp sphere; it radiates. Without that effect, even a well-crafted shader reads as flat and artificial. We need to add post-processing.
+The shader produces the right movement, but aesthetically something is still missing. In space photography and rendered 3D scenes, luminous objects bleed light into the surrounding space, producing a soft glow rather than a hard edge. A planet viewed through a telescope does not look like a crisp sphere; it radiates. Without this effect, even a well-crafted shader reads as flat and artificial. Post-processing is therefore necessary.
 
-Three.js's post-processing system works by re-rendering the already-finished scene through a stack of effect passes, similar to applying filters to a photograph after it is taken. Bloom, the glowing effect around bright objects, is one of the most visually impactful. The problem is that post-processing passes are applied to the entire scene uniformly, with no built-in way to say "bloom this object but not that one." Applying bloom globally washes out everything and destroys the visual hierarchy.
+Three.js's post-processing system works by re-rendering the already-finished scene through a stack of effect passes, similar to applying filters to a photograph after it is taken. Bloom, the glowing effect around bright objects, is one of the most visually impactful. The built-in `UnrealBloomPass` implements this effect.
+
+![Unreal Bloom](/uploads/escaping-flatland-2.png)
+
+The problem is that post-processing passes are applied to the entire scene uniformly, with no built-in mechanism for selective per-object bloom control. Applying bloom globally washes out everything and destroys the visual hierarchy.
 
 The workaround is a two-pass render:
 
@@ -287,48 +296,139 @@ render() {
 }
 ```
 
-It requires maintaining two `EffectComposer` instances and manually managing which objects are visible in which pass. But the result is fine-grained, per-object bloom control: your glowing spheres glow, and nothing else does.
+It requires maintaining two `EffectComposer` instances and manually managing which objects are visible in which pass. The result is fine-grained, per-object bloom control: glowing spheres glow, and nothing else does.
+
+![Selective bloom - without bloom](/uploads/escaping-flatland-3.png)
+![Selective bloom - 1st rendering](/uploads/escaping-flatland-4.png)
+![Selective bloom - 2nd rendering](/uploads/escaping-flatland-5.png)
 
 ## Challenges & Optimization
 
-While above techniques are conceptually simple, naively putting everything together and then rendering a large scale dataset (>1M samples) could be problematic: wasting memory, wasting computation power, low FPS, and hence a bad user experience.
+While the above techniques are conceptually sound, assembling them without careful optimization and then rendering a large-scale dataset (over one million samples) would be problematic: excessive memory consumption, unnecessary computation, low frame rates, and consequently a poor user experience.
 
 Profiling revealed four distinct bottlenecks:
 
 1. Too many objects in the scene graph
 2. Too many draw calls to the GPU
-3. Expensive frustum testing: figuring out which objects are inside the camera's view volume
+3. Expensive frustum testing: determining which objects fall inside the camera's view volume
 4. Unnecessary geometry complexity: rendering detailed meshes for objects that are far away
+
+![Performance profile](/uploads/escaping-flatland-6.png)
 
 Each required its own solution, and they compose together.
 
 ### 1. Reducing Objects: `Points`
 
-The first move was replacing individual meshes with a single [`Points`](https://threejs.org/docs/#api/en/objects/Points) primitive. Rather than thousands of separate objects in the scene graph, `Points` renders all vertices as a single object with a single draw call. It's not sufficient on its own, though. When you zoom in close, flat sprites look wrong and you still need real 3D geometry. But for distant points, `Points` is sufficient as our eyes can't distinguish points anyway. It eliminates the per-object overhead for most of the points in the scene.
+The first step was to replace individual meshes with a single [`Points`](https://threejs.org/docs/#api/en/objects/Points) primitive. Rather than thousands of separate objects in the scene graph, `Points` renders all vertices as a single object with a single draw call. This is not sufficient on its own, however. When zooming in close, flat sprites look wrong and real 3D geometry is still required. For distant points, `Points` is adequate, as individual data points are indistinguishable at that range. It eliminates per-object overhead for the majority of points in the scene.
 
-### 2. Reducing Draw Calls with Instancing
+### 2. Reducing Geometry Complexity: LOD
 
-When the camera is close enough that the points need to render as 3D spheres, [`InstancedMesh`](https://threejs.org/docs/#api/en/objects/InstancedMesh) is the right tool. It lets you define a mesh once (geometry + material), then render any number of instances of it using a per-instance transformation matrix, all in a single draw call. Escaping Flatland maintains three separate InstancedMesh objects for HD, SD, and LD detail levels, each backed by an icosahedron at a different subdivision level:
+For points close to the camera, real 3D geometry is still required. However, geometry complexity can be managed based on distance from the camera. Points within 150 units receive the HD mesh (along with a label sprite); between 150 and 300 units, the SD mesh; between 300 and 600 units, the LD mesh; and beyond 600 units, the flat `Points` primitive covers them. This is the application of Level of Detail (LOD), which renders cheaper geometry for objects where the detail would be invisible anyway.
 
-```js
-// High detail: IcosahedronGeometry(radius, 2)
-// Standard detail: IcosahedronGeometry(radius, 1)
-// Low detail: IcosahedronGeometry(radius, 0)
+```ts
+// pseudo-code for the concept
+// Distance thresholds (squared, to avoid sqrt per point)
+const HD_DIST_SQ = 150 * 150; // high-detail radius
+const SD_DIST_SQ = 300 * 300; // standard-detail radius
+const LD_DIST_SQ = 600 * 600; // low-detail radius
+                              // beyond LD → already covered by Points
+
+type LODTier = 'HD' | 'SD' | 'LD' | 'NONE';
+
+// Each mesh tier uses the same base shape at a different subdivision level
+const LOD_GEOMETRY: Record<Exclude<LODTier, 'NONE'>, IcosahedronGeometry> = {
+  HD: new THREE.IcosahedronGeometry(radius, 2), // 320 faces
+  SD: new THREE.IcosahedronGeometry(radius, 1), //  80 faces
+  LD: new THREE.IcosahedronGeometry(radius, 0), //  20 faces
+};
+
+// Called every frame inside update()
+function assignLOD(point: Vector3, camera: Camera): LODTier {
+  const distSq = point.distanceToSquared(camera.position);
+
+  if (distSq < HD_DIST_SQ) {
+    return 'HD';   // close: full-detail icosahedron + label
+  } else if (distSq < SD_DIST_SQ) {
+    return 'SD';   // mid-range: reduced icosahedron, no label
+  } else if (distSq < LD_DIST_SQ) {
+    return 'LD';   // far: lowest-poly icosahedron
+  } else {
+    return 'NONE'; // too far: skip mesh, already rendered as a Point
+  }
+}
 ```
 
-On every frame, only the matrices for currently visible points are written into the buffers; the rest aren't touched.
+### 3. Reducing Draw Calls with Instancing
 
+Draw calls happen when switching between different materials, geometries, or textures on the GPU. Every mesh is an object in the scene graph, and whenever it is in the frustum and should be rendered, it invokes a draw call. However, even with optimized shaders and geometries, too many draw calls can overwhelm the GPU, leading to performance degradation.
 
-### 3. Reducing Frustum Testing: Octree
+![Each mesh has its own draw call](/uploads/escaping-flatland-7.png)
+![Many meshes equals many draw calls](/uploads/escaping-flatland-8.png)
 
-Even with InstancedMesh, deciding which points are visible on every frame was too slow. Testing each of 500,000 points against the camera frustum linearly is O(n) and it shows.
+The solution is to render multiple objects using a single draw call, which is achieved through instancing. In Three.js, instancing is implemented through [`InstancedMesh`](https://threejs.org/docs/#api/en/objects/InstancedMesh). It lets you define a mesh once (geometry + material), then render any number of instances of it using a per-instance transformation matrix, all in a single draw call. Per-instance attributes such as color and transform can still be varied independently, while the draw call count remains fixed at one per mesh type.
 
-The solution is a spatial data structure: an Octree. 
-An Octrees are hierarchical tree structures that recursively partition 3D space into eight octants. They're a natural fit for 3D point data, but they generalize cleanly to higher dimensions. The only difference is that in 2D you use quadtrees (four quadrants), and in 4D you'd use 16-trees, and so on — always 2^N partitions per level.
+Here is an illustration of the concept:
+
+![Instancing](/uploads/escaping-flatland-9.png)
+
+Combining instancing with LOD, Escaping Flatland maintains three separate `InstancedMesh` objects for HD, SD, and LD detail levels, each backed by an [`icosahedron`](https://threejs.org/docs/#api/en/geometries/IcosahedronGeometry) at a different subdivision level:
+
+```ts
+// pseudo-code for the concept
+// One InstancedMesh per LOD tier, each with a different subdivision level
+const hdMesh = new THREE.InstancedMesh(
+  new THREE.IcosahedronGeometry(radius, 2), material, MAX_COUNT // 320 faces
+);
+const sdMesh = new THREE.InstancedMesh(
+  new THREE.IcosahedronGeometry(radius, 1), material, MAX_COUNT //  80 faces
+);
+const ldMesh = new THREE.InstancedMesh(
+  new THREE.IcosahedronGeometry(radius, 0), material, MAX_COUNT //  20 faces
+);
+
+// Called every frame inside update()
+function updateInstances(points: Vector3[], camera: Camera) {
+  let hdCount = 0, sdCount = 0, ldCount = 0;
+
+  for (const point of points) {
+    const tier = assignLOD(point, camera); // from the previous section
+
+    if (tier === 'HD') {
+      setInstanceMatrix(hdMesh, hdCount++, point);
+    } else if (tier === 'SD') {
+      setInstanceMatrix(sdMesh, sdCount++, point);
+    } else if (tier === 'LD') {
+      setInstanceMatrix(ldMesh, ldCount++, point);
+    }
+    // tier === 'NONE' → skip; already visible as a flat Point
+  }
+
+  // Only draw the instances we actually populated
+  hdMesh.count = hdCount;
+  sdMesh.count = sdCount;
+  ldMesh.count = ldCount;
+}
+```
+
+The optimization strategy is as follows: on every frame, the instanced meshes are rendered with the appropriate detail level for each point, depending on the camera distance. The high-detail meshes are rendered only when the camera is close to the points, the low-detail meshes when the camera is far away, and `Points` covers everything beyond the culling range.
+
+![InstancedMesh, LOD, and Points](/uploads/escaping-flatland-10.png)
+
+### 4. Reducing Frustum Testing: Octree
+
+Even with `InstancedMesh`, deciding which points to render with appropriate LOD on every frame was too slow. Testing each of 1M points against the camera frustum linearly is `O(n)` and it shows.
+
+The solution is a spatial data structure: an Octree.
+
+Octrees are hierarchical tree structures that recursively partition 3D space into eight octants. They are a natural fit for 3D point data, but they generalize cleanly to higher dimensions. In 2D the equivalent structure is a quadtree (four quadrants), and the pattern follows the rule of 2^N partitions per level for N dimensions.
 
 The structure is simple to implement:
 
 ```ts
+// pseudo-code for the concept
+// The bounding box is the smallest cube that contains all the points in the node.
+// If the node is a leaf, it contains the points.
+// If the node is not a leaf, it contains four children, each of which is an OctreeNode.
 // Recursive node structure
 interface OctreeNode {
   bounds: BoundingBox;
@@ -355,9 +455,11 @@ function insert(node: OctreeNode, point: Point) {
 }
 ```
 
-So, instead of testing every point, you traverse the tree and prune entire subtrees that don't intersect the frustum. The visible points you need are at the leaves of the intersecting octants.
+Instead of testing every point, the tree is traversed and entire subtrees that do not intersect the frustum are pruned. The visible points needed are at the leaves of the intersecting octants.
 
-There's also a second trick worth noting: rather than using a single frustum that matches the camera exactly, I use a custom culling frustum with a shorter far plane. This limits how many points are ever considered visible at once, which keeps the HD/SD/LD mesh counts bounded regardless of how many total points exist in the scene.
+![Octree](/uploads/escaping-flatland-11.png)
+
+There is also a second trick worth noting: rather than using a single frustum that matches the camera exactly, a custom culling frustum with a shorter far plane is used. This limits how many points are ever considered visible at once, which keeps the HD/SD/LD mesh counts bounded regardless of how many total points exist in the scene.
 
 ```ts
 // In FrustumCuller.cull():
@@ -371,16 +473,11 @@ frustum.setFromProjectionMatrix(m.multiplyMatrices(
 const intersections = this.octree.cull(frustum);
 ```
 
-### 4. Reducing Geometry Complexity: LOD
+Here is a demo that shows how it works:
 
-The distance from the camera determines which InstancedMesh a point gets assigned to. Points within 150 units get the HD mesh (and a label sprite); between 150–300 units get the SD mesh; beyond 300 get the LD mesh. This is the application of Level of Detail (LOD), which renders cheaper geometry for objects where the detail would be invisible anyway.
+![Frustum culling with Octree](/uploads/escaping-flatland-13.gif)
 
-```ts
-const octantContainsHDMesh = 
-  x.distanceToSquared(camera.position) < maxHdDistanceSq; // 150^2
-const octantContainsSDMesh = 
-  x.distanceToSquared(camera.position) < maxSdDistanceSq; // 300^2
-```
+In the demo, each point is a member of an octant, and when a frustum intersects an octant, all the points in that octant are potentially visible (marked green) and can simply be made visible. Further testing the distance between the camera and the bounding box of the octant then determines which level of detail to render for the points within it.
 
 ### Summary
 
@@ -397,8 +494,9 @@ Together, these bring the frame rate above 20 FPS on an average machine with hal
 
 ## What This Actually Looks Like
 
-The demo renders a galaxy-like cloud of 500,000 random points, grouped by color into clusters. At the macro scale, you see the whole distribution at once. As you zoom in, the flat sprites resolve into proper 3D spheres with labels attached. The transition is smooth because the Octree culling and InstancedMesh swapping happen fast enough to stay within a frame budget.
-It's deliberately mock data. The point was never the dataset; it was the rendering pipeline. The same architecture can be adapted to any large point cloud: geographic data, scientific simulations, network graphs in 3D space.
+The demo renders a galaxy-like cloud of 500,000 random points, grouped by color into clusters. At the macro scale, the full distribution is visible at once. As the camera zooms in, the flat sprites resolve into proper 3D spheres with labels attached. The transition is smooth because the Octree culling and InstancedMesh swapping happen fast enough to stay within a frame budget.
+
+The data is deliberately synthetic. The point was never the dataset; it was the rendering pipeline. The same architecture can be adapted to any large point cloud: geographic data, scientific simulations, network graphs in 3D space.
 
 ## Live Demo
 
@@ -406,6 +504,6 @@ Try [the live demo](https://escaping-flatland.netlify.app)!
 
 ## Closing Thoughts
 
-The path from "I want a 3D chart" to "I have a 3D chart that runs at 20 FPS with half a million points" turns out to pass through shader programming, spatial data structures, and GPU memory management. None of that is especially exotic. Three.js, the sparse-octree library, and the WebGL post-processing pipeline are all well-documented. But it's a different class of problem than building a chart on top of D3.
+The path from "I want a 3D chart" to "I have a 3D chart that runs at 20 FPS with half a million points" passes through shader programming, spatial data structures, and GPU memory management. None of that is especially exotic. Three.js, the sparse-octree library, and the WebGL post-processing pipeline are all well-documented. But it is a different class of problem than building a chart on top of D3.
 
-Tufte was right that escaping flatland is the essential task. What's changed since 1990 is that the escape route is now a JavaScript file and a browser.
+Tufte was right that escaping flatland is the essential task. What has changed since 1990 is that the escape route is now a JavaScript file and a browser.

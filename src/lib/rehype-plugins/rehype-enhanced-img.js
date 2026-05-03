@@ -57,13 +57,24 @@ export function rehypeEnhancedImg() {
 				children: [],
 			};
 
+			// Build optional figcaption from alt text
+			const figureChildren = [enhancedImg];
+			if (alt) {
+				figureChildren.push({
+					type: "element",
+					tagName: "figcaption",
+					properties: { className: ["flex", "justify-center"] },
+					children: [{ type: "text", value: alt }],
+				});
+			}
+
 			// Wrap in <figure class="image py-2">
 			/** @type {import('hast').Element} */
 			const figure = {
 				type: "element",
 				tagName: "figure",
-				properties: { className: ["image", "py-2"] },
-				children: [enhancedImg],
+				properties: { className: ["image", "py-2", "mx-auto", "w-fit", "flex", "justify-center", "flex-col"] },
+				children: figureChildren,
 			};
 
 			// If the <img> is the only child of a <p>, replace the <p>
