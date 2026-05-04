@@ -69,11 +69,11 @@ To achieve these goals, the project is built with [Three.js](https://threejs.org
 
 Before addressing the performance challenges, it is useful to survey the fundamental building blocks of any Three.js scene. Most of the optimization work discussed later comes down to how these pieces interact.
 
-- **Scene**: the container that holds everything
-- **Objects**: meshes, points, lines; the visible geometry in the scene
-- **Camera**: the virtual viewpoint; where the user is standing and what direction they are looking
-- **Lights**: light sources that illuminate the scene; not all rendering modes need them, but they matter for realism
-- **Renderer**: the engine that takes all of the above and draws pixels to the screen each frame
+- **[Scene](https://threejs.org/docs/#api/en/scenes/Scene)**: the container that holds everything; it can be thought of as a virtual space where objects are placed
+- **[Objects](https://threejs.org/docs/#api/en/objects/Mesh)**: meshes, points, lines; the visible geometry in the scene
+- **[Camera](https://threejs.org/docs/#api/en/cameras/PerspectiveCamera)**: the virtual viewpoint; where the user is standing and what direction they are looking. The **[frustum](https://en.wikipedia.org/wiki/Frustum)** is the region of space that is visible to the camera. **Frustum culling** is the process of removing objects that are not visible to the camera.
+- **[Lights](https://threejs.org/docs/#api/en/lights/Light)**: light sources that illuminate the scene; not all rendering modes need them, but they matter for realism
+- **[Renderer](https://threejs.org/docs/#api/en/renderers/WebGLRenderer)**: the engine that takes all of the above and draws pixels to the screen each frame
 
 The program lifecycle is straightforward: `init()` creates the scene, `animate()` runs in a loop calling `update()` then `render()`, and `destroy()` cleans up GPU memory when the component is torn down. Almost all of the interesting work happens inside `update()` and inside the shaders that run on the GPU.
 
@@ -115,6 +115,50 @@ destroy();
 ```
 
 ![Basic building blocks and lifecycle](/uploads/escaping-flatland-0.png)
+
+### Mapping Data to 3D Space
+
+Any dataset with at least three numerical dimensions can be plotted directly in 3D space by mapping three of its variables to x, y, and z coordinates. For a dataset with exactly three dimensions, the mapping is immediate. For datasets with more than three dimensions, three axes must be selected, either by choosing the most informative variables manually or by applying a dimensionality reduction technique such as Principal Component Analysis (PCA) or t-distributed Stochastic Neighbor Embedding (t-SNE), which compresses high-dimensional structure into three coordinates while preserving as much relational information as possible. The choice of reduction method is a domain-specific decision and is out of scope for this article, but the key point is that the rendering problem is the same regardless of how the coordinates were derived.
+
+In this project, the dataset is synthetic: (x, y, z) positions distributed across a large cube, each assigned to a color group. The most intuitive way to render them is a simple loop, creating one sphere mesh per data point:
+
+```ts
+// pseudo-code for the concept
+// For a 3D dataset, map directly to x, y, z
+// For >3D datasets, reduce to 3D first (e.g. PCA, t-SNE), then do the same
+const geometry = new THREE.SphereGeometry(radius);
+
+for (const point of dataset) {
+  const material = new THREE.MeshPhongMaterial({ color: point.color });
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.position.set(point.x, point.y, point.z);
+  scene.add(mesh);
+}
+```
+
+This works correctly for small datasets. At the scale of hundreds of thousands of points, however, this approach becomes the source of every performance problem described in the Challenges section: each sphere is its own scene graph object, each requires its own draw call, and each must be tested individually against the camera frustum every frame. We'll look at how to overcome these limitations in the next section.
+
+### Zoom and Navigation
+
+The second requirement from the Goal section calls for a continuous zoom experience that lets the viewer move between a macro view of the entire distribution and a micro view of individual clusters. Three.js's [`OrbitControls`](https://threejs.org/docs/#examples/en/controls/OrbitControls) provides this out of the box, binding mouse scroll (or pinch on touch devices) to camera zoom and handling orbit and pan as well.
+
+The critical configuration is the zoom range. With `minDistance = 3` and `maxDistance = 24000`, the camera can pull back far enough to see the entire 1M-point cloud as a compact galaxy, or close enough that individual sphere-rendered points fill the screen. Each camera movement triggers a recalculation of which points fall within the frustum and at which level of detail, connecting user input directly to the LOD system described in the Challenges section:
+
+```ts
+// pseudo-code for the concept
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.minDistance = 3;      // zoom in: individual points fill the screen
+controls.maxDistance = 24000;  // zoom out: entire dataset visible at once
+
+// Re-run frustum culling whenever the camera moves
+controls.addEventListener('change', () => {
+  frustumCuller.cull(); // recompute visible points and LOD tiers
+});
+```
+
+The result is the core of the immersive experience: the viewer can sense the scale of the full dataset from a distance, then navigate into it and feel surrounded by data.
 
 ### Interactivity via Raycasting
 
@@ -223,7 +267,7 @@ void main() {
 
 The shader produces the right movement, but aesthetically something is still missing. In space photography and rendered 3D scenes, luminous objects bleed light into the surrounding space, producing a soft glow rather than a hard edge. A planet viewed through a telescope does not look like a crisp sphere; it radiates. Without this effect, even a well-crafted shader reads as flat and artificial. Post-processing is therefore necessary.
 
-Three.js's post-processing system works by re-rendering the already-finished scene through a stack of effect passes, similar to applying filters to a photograph after it is taken. Bloom, the glowing effect around bright objects, is one of the most visually impactful. The built-in `UnrealBloomPass` implements this effect.
+Three.js's post-processing system works by re-rendering the already-finished scene through a stack of effect passes, similar to applying filters to a photograph after it is taken. Bloom, the glowing effect around bright objects, is one of the most visually impactful. The built-in [`UnrealBloomPass`](https://threejs.org/docs/#examples/en/postprocessing/UnrealBloomPass) implements this effect.
 
 ![Unreal Bloom](/uploads/escaping-flatland-2.png)
 
@@ -234,7 +278,7 @@ The workaround is a two-pass render:
 1. Render only the objects that should bloom, apply the `UnrealBloomPass`, write to a separate render target
 2. Render only the objects that should not bloom, with no post-effect
 
-The two render targets are then composited using a custom `ShaderPass` that blends them together:
+The two render targets are then composited using a custom [`ShaderPass`](https://threejs.org/docs/#examples/en/postprocessing/ShaderPass) that blends them together:
 
 ```ts
 // pseudo-code for the concept
@@ -319,7 +363,7 @@ Each required its own solution, and they compose together.
 
 ### 1. Reducing Objects: `Points`
 
-The first step was to replace individual meshes with a single [`Points`](https://threejs.org/docs/#api/en/objects/Points) primitive. Rather than thousands of separate objects in the scene graph, `Points` renders all vertices as a single object with a single draw call. This is not sufficient on its own, however. When zooming in close, flat sprites look wrong and real 3D geometry is still required. For distant points, `Points` is adequate, as individual data points are indistinguishable at that range. It eliminates per-object overhead for the majority of points in the scene.
+The first step was to replace the per-sphere loop with a single [`Points`](https://threejs.org/docs/#api/en/objects/Points) primitive, which renders all vertices as one scene graph object with one draw call, eliminating the per-object overhead described above. It is not sufficient on its own, however: when zooming in close, flat sprites look wrong and real 3D geometry is still required. For distant points, `Points` is adequate, as individual data points are indistinguishable at that range.
 
 ### 2. Reducing Geometry Complexity: LOD
 
@@ -422,7 +466,7 @@ The solution is a spatial data structure: an Octree.
 
 Octrees are hierarchical tree structures that recursively partition 3D space into eight octants. They are a natural fit for 3D point data, but they generalize cleanly to higher dimensions. In 2D the equivalent structure is a quadtree (four quadrants), and the pattern follows the rule of 2^N partitions per level for N dimensions.
 
-The structure is simple to implement:
+I used a sparse Octree from the [`sparse-octree`](https://github.com/vanruesc/sparse-octree) library, which is a space-efficient implementation of an Octree that only stores nodes that contain points. However, the core logic is simple:
 
 ```ts
 // pseudo-code for the concept
@@ -494,7 +538,7 @@ Together, these bring the frame rate above 20 FPS on an average machine with hal
 
 ## What This Actually Looks Like
 
-The demo renders a galaxy-like cloud of 500,000 random points, grouped by color into clusters. At the macro scale, the full distribution is visible at once. As the camera zooms in, the flat sprites resolve into proper 3D spheres with labels attached. The transition is smooth because the Octree culling and InstancedMesh swapping happen fast enough to stay within a frame budget.
+The demo renders a galaxy-like cloud of 1M random points, grouped by color into clusters. At the macro scale, the full distribution is visible at once. As the camera zooms in, the flat sprites resolve into proper 3D spheres with labels attached. The transition is smooth because the Octree culling and InstancedMesh swapping happen fast enough to stay within a frame budget.
 
 The data is deliberately synthetic. The point was never the dataset; it was the rendering pipeline. The same architecture can be adapted to any large point cloud: geographic data, scientific simulations, network graphs in 3D space.
 
@@ -504,6 +548,6 @@ Try [the live demo](https://escaping-flatland.netlify.app)!
 
 ## Closing Thoughts
 
-The path from "I want a 3D chart" to "I have a 3D chart that runs at 20 FPS with half a million points" passes through shader programming, spatial data structures, and GPU memory management. None of that is especially exotic. Three.js, the sparse-octree library, and the WebGL post-processing pipeline are all well-documented. But it is a different class of problem than building a chart on top of D3.
+The path from "I want a 3D chart" to "I have a 3D chart that runs at 60 FPS with one million points" passes through shader programming, spatial data structures, and GPU memory management. None of that is especially exotic. Three.js, the `sparse-octree` library, and the WebGL post-processing pipeline are all well-documented. But it is a different class of problem than building a chart on top of D3.
 
 Tufte was right that escaping flatland is the essential task. What has changed since 1990 is that the escape route is now a JavaScript file and a browser.
