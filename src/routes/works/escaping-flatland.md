@@ -534,7 +534,7 @@ The full optimization stack, stacked in layers:
 | Expensive frustum testing | Octree: logarithmic spatial pruning |
 | Unnecessary geometry | Three-tier LOD: detail budget scales with distance |
 
-Together, these bring the frame rate above 20 FPS on an average machine with half a million points in the scene.
+Together, these bring the frame rate above 60 FPS on an average machine with half a million points in the scene.
 
 ## What This Actually Looks Like
 
