@@ -18,11 +18,11 @@ thumbnail: /uploads/escaping-flatland-demo-0.png
 banner: /uploads/escaping-flatland-demo-3.png
 images:
   - image: /uploads/escaping-flatland-demo-1.png
-    caption: Fig. 1 - Do Not Go Gentle into That Good Night
+    caption: Do Not Go Gentle into That Good Night
   - image: /uploads/escaping-flatland-demo-2.png
-    caption: Fig. 2 - Here's our sun
+    caption: Here's our sun
   - image: /uploads/escaping-flatland-demo-3.png
-    caption: Fig. 3 - Look closely
+    caption: Look closely
 additionalLinks:
   - url: https://escaping-flatland.netlify.app/
     title: Demo
@@ -58,7 +58,7 @@ The goal is to provide an immersive data exploration experience that is qualitat
 
 Two concrete requirements define the scope:
 
-- **Render 1M data points smoothly**: A million points is the threshold where the browser's default rendering approaches start to break down. Reaching it without sacrificing frame rate requires deliberate engineering.
+- **Render 1M data points smoothly**: One million is not an arbitrary target. Since Excel 2007, Microsoft Excel's row limit has been 1,048,576, which is exactly 2^20. This makes one million the de facto ceiling for spreadsheet-scale tabular data: any dataset that fits in the most widely used data tool in the world could reasonably be handed to a visualization system. A browser-based 3D renderer should be able to handle it. One million is also, practically speaking, the point where naive browser rendering approaches stop working entirely: frame rates drop below usability, and GPU memory pressure becomes visible. Reaching this target without sacrificing frame rate therefore requires deliberate engineering rather than off-the-shelf components.
 - **Support zooming in and out for micro and macro views**: The experience should feel continuous. Zooming out should reveal the full shape of the dataset; zooming in should reveal individual points with enough detail to distinguish them.
 
 ## The Stack
@@ -265,11 +265,9 @@ void main() {
 
 ### Selective Bloom
 
-The shader produces the right movement, but aesthetically something is still missing. In space photography and rendered 3D scenes, luminous objects bleed light into the surrounding space, producing a soft glow rather than a hard edge. A planet viewed through a telescope does not look like a crisp sphere; it radiates. Without this effect, even a well-crafted shader reads as flat and artificial. Post-processing is therefore necessary.
+The shader produces the right movement, but there is one more aesthetic touch worth adding. In space photography and rendered 3D scenes, luminous objects bleed light into the surrounding space, producing a soft glow rather than a hard edge. A planet viewed through a telescope does not look like a crisp sphere; it radiates. The scene is perfectly renderable without this effect, but adding it transforms a technically correct sphere into something that feels luminous and alive. It is the finishing detail that makes the difference between a visualization and a view.
 
-Three.js's post-processing system works by re-rendering the already-finished scene through a stack of effect passes, similar to applying filters to a photograph after it is taken. Bloom, the glowing effect around bright objects, is one of the most visually impactful. The built-in [`UnrealBloomPass`](https://threejs.org/docs/#examples/en/postprocessing/UnrealBloomPass) implements this effect.
-
-![Unreal Bloom](/uploads/escaping-flatland-2.png)
+Three.js's post-processing system works by re-rendering the already-finished scene through a stack of effect passes, similar to applying filters to a photograph after it is taken. Bloom, the glowing effect around bright objects, is one of the most visually impactful. The built-in [`UnrealBloomPass`](https://threejs.org/docs/#examples/en/postprocessing/UnrealBloomPass) is the one we use here.
 
 The problem is that post-processing passes are applied to the entire scene uniformly, with no built-in mechanism for selective per-object bloom control. Applying bloom globally washes out everything and destroys the visual hierarchy.
 
@@ -365,9 +363,24 @@ Each required its own solution, and they compose together.
 
 The first step was to replace the per-sphere loop with a single [`Points`](https://threejs.org/docs/#api/en/objects/Points) primitive, which renders all vertices as one scene graph object with one draw call, eliminating the per-object overhead described above. It is not sufficient on its own, however: when zooming in close, flat sprites look wrong and real 3D geometry is still required. For distant points, `Points` is adequate, as individual data points are indistinguishable at that range.
 
+```ts
+// pseudo-code for the concept
+// before
+for (point of data) {
+  // this is slow
+  scene.add(new THREE.Mesh(sphereGeo, material));
+}
+
+// after
+const points = new THREE.Points(sphereGeo, material);
+scene.add(points);
+```
+
 ### 2. Reducing Geometry Complexity: LOD
 
 For points close to the camera, real 3D geometry is still required. However, geometry complexity can be managed based on distance from the camera. Points within 150 units receive the HD mesh (along with a label sprite); between 150 and 300 units, the SD mesh; between 300 and 600 units, the LD mesh; and beyond 600 units, the flat `Points` primitive covers them. This is the application of Level of Detail (LOD), which renders cheaper geometry for objects where the detail would be invisible anyway.
+
+Recall that the naive sphere-per-point loop in the Mapping Data to 3D Space section used `SphereGeometry`, a UV sphere that distributes vertices by latitude and longitude, producing dense clusters at the poles and a coarser band at the equator. For LOD purposes this is a poor fit: the vertex count cannot be reduced in meaningful coarse steps, and even its cheapest configuration carries more geometry than necessary. `IcosahedronGeometry` solves both problems. It subdivides the faces of a regular icosahedron uniformly, giving a near-even vertex distribution across the surface. More importantly, its `detail` parameter directly controls the face count in predictable steps: detail 0 gives 20 faces, detail 1 gives 80, and detail 2 gives 320. This makes it straightforward to define three distinct quality tiers with a single integer, which maps cleanly onto the HD, SD, and LD levels below.
 
 ```ts
 // pseudo-code for the concept
@@ -380,7 +393,7 @@ const LD_DIST_SQ = 600 * 600; // low-detail radius
 type LODTier = 'HD' | 'SD' | 'LD' | 'NONE';
 
 // Each mesh tier uses the same base shape at a different subdivision level
-const LOD_GEOMETRY: Record<Exclude<LODTier, 'NONE'>, IcosahedronGeometry> = {
+const LOD_GEOMETRY: Record<Exclude<LODTier, 'NONE'>, THREE.IcosahedronGeometry> = {
   HD: new THREE.IcosahedronGeometry(radius, 2), // 320 faces
   SD: new THREE.IcosahedronGeometry(radius, 1), //  80 faces
   LD: new THREE.IcosahedronGeometry(radius, 0), //  20 faces
@@ -413,7 +426,7 @@ The solution is to render multiple objects using a single draw call, which is ac
 
 Here is an illustration of the concept:
 
-![Instancing](/uploads/escaping-flatland-9.png)
+![InstancedMesh only consumes one draw call](/uploads/escaping-flatland-9.png)
 
 Combining instancing with LOD, Escaping Flatland maintains three separate `InstancedMesh` objects for HD, SD, and LD detail levels, each backed by an [`icosahedron`](https://threejs.org/docs/#api/en/geometries/IcosahedronGeometry) at a different subdivision level:
 
@@ -503,7 +516,9 @@ Instead of testing every point, the tree is traversed and entire subtrees that d
 
 ![Octree](/uploads/escaping-flatland-11.png)
 
-There is also a second trick worth noting: rather than using a single frustum that matches the camera exactly, a custom culling frustum with a shorter far plane is used. This limits how many points are ever considered visible at once, which keeps the HD/SD/LD mesh counts bounded regardless of how many total points exist in the scene.
+There is also a second trick worth noting, and the reason behind it is non-obvious. Each `InstancedMesh` has a fixed maximum instance count allocated at construction time: 128 slots for HD, 128 for SD, and the remainder for LD. The culling loop fills these slots in ascending distance order, so the closest points always take priority. The problem arises when more points fall inside the frustum than the total slot budget allows. Without a far-plane restriction, the LD slots could be exhausted by distant points, leaving nearby points that should legitimately be rendered as HD or SD meshes with no slot to occupy. The result would be close-up points vanishing silently whenever the camera zooms out even slightly.
+
+The solution is to use a second, truncated frustum just for the culling process, whose far plane is set much closer than the actual camera far plane. Only points within this tighter volume are ever considered for instanced mesh rendering at all. Because the loop processes octants in ascending distance order within this bounded frustum, the nearest points always claim their slots first, and the fixed instance budgets are never wasted on geometry too far away to matter.
 
 ```ts
 // In FrustumCuller.cull():
@@ -534,13 +549,15 @@ The full optimization stack, stacked in layers:
 | Expensive frustum testing | Octree: logarithmic spatial pruning |
 | Unnecessary geometry | Three-tier LOD: detail budget scales with distance |
 
-Together, these bring the frame rate above 60 FPS on an average machine with half a million points in the scene.
+Together, these bring the frame rate above 60 FPS on an average machine with one million points in the scene.
 
 ## What This Actually Looks Like
 
 The demo renders a galaxy-like cloud of 1M random points, grouped by color into clusters. At the macro scale, the full distribution is visible at once. As the camera zooms in, the flat sprites resolve into proper 3D spheres with labels attached. The transition is smooth because the Octree culling and InstancedMesh swapping happen fast enough to stay within a frame budget.
 
 The data is deliberately synthetic. The point was never the dataset; it was the rendering pipeline. The same architecture can be adapted to any large point cloud: geographic data, scientific simulations, network graphs in 3D space.
+
+![Final result](/uploads/escaping-flatland-demo-4.gif)
 
 ## Live Demo
 
