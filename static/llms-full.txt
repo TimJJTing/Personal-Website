@@ -77,14 +77,24 @@ If you've spent time in a terminal, you've probably run `cowsay` at least once �
 ---
 
 ### Escaping Flatland (2024)
-**Technologies:** Three.js, Svelte, SvelteKit, Octree, GLSL Shaders, LOD
+**Technologies:** Three.js, Svelte, SvelteKit, Octree, GLSL Shaders, LOD, InstancedMesh, WebGL Post-processing
 **Links:** [Demo](https://escaping-flatland.netlify.app/) | [Source](https://github.com/TimJJTing/Escaping-Flatland) | [Slides](https://timjjting.github.io/Escaping-Flatland-Slides/)
 
 > *Even though we navigate daily through a perceptual world of three dimensions… the world displayed on our information displays is caught up in the two dimensionality of the endless flatlands of paper and video screens… Escaping this flatland is the essential task of envisioning information — for all the interesting worlds that we seek to understand are inevitably and happily multivariate in nature. Not flatlands. (Tufte 1990)*
 
-Computer screens have the ability to display a wide range of information. Beyond 3D coordinates, they can simultaneously show colors, dynamic patterns, rotations, and motions, enabling human eyes to observe and interpret complex datasets. Zooming further enhances this by allowing both micro and macro readings on the same device, supporting more comprehensive data analysis.
+Escaping Flatland is a project that attempts to visualize n-dimensional datasets in 3D space for an immersive, sensory experience. The core goals are to render one million data points smoothly in the browser and support continuous zooming between macro and micro views, so the viewer can sense the full shape of a dataset from a distance and then navigate into individual clusters.
 
-This project demonstrates optimization techniques for plotting large datasets in a 3D space using Three.js and Octree. It also explores how Three.js can be integrated into a Svelte project, though Threlte offers a more mature solution for this purpose.
+The project was inspired in part by the galaxy map in Mass Effect 2, where navigating the SSV Normandy through hundreds of star systems — each planet with its own codex entry — demonstrated what it feels like to move through data rather than read it from a fixed vantage point.
+
+**Motivation and stack.** Built on Three.js and SvelteKit, the project addresses a set of genuinely hard engineering problems: how to render a million data points smoothly in the browser, how to apply per-object visual effects without exceeding the frame budget, and how to integrate all of this cleanly into a modern web framework.
+
+**Optimization techniques.** Profiling revealed four distinct bottlenecks, each requiring its own solution. Too many scene objects are resolved by replacing individual sphere meshes with a single Three.js `Points` primitive for distant points. Too many draw calls are resolved with `InstancedMesh`, rendering HD, SD, and LD detail tiers in one draw call each. Expensive frustum testing is resolved by a sparse Octree that prunes entire subtrees outside the camera view, reducing O(n) linear tests to logarithmic traversal. Unnecessary geometry complexity is resolved by three-tier LOD using `IcosahedronGeometry` at different subdivision levels (detail 0/1/2), with a truncated culling frustum that ensures the nearest points always claim their instance slots first.
+
+**Labels as instanced sprites.** Labels for the nearest data points are rendered using a custom `InstancedLabelSprites` class rather than DOM-based `CSS2DObject` elements. All label text is packed into a single canvas texture atlas, and a custom shader uses `gl_InstanceID` to sample each instance's cell. The label plane is a billboard with constant screen size and a view-space vertical offset, rendered in a single draw call sharing the HD-tier instance budget.
+
+**Visual effects.** Per-point GPU shaders implement a differential rotation effect (Jupiter-like banding) for each data point. A two-pass selective bloom post-processing setup using `UnrealBloomPass` and a custom `ShaderPass` applies glow selectively to bloom-tagged objects without washing out the rest of the scene.
+
+**Pitfalls documented.** Two non-obvious bugs are documented in the article. First, `InstancedMesh` bounding spheres become stale when instance matrices are updated every frame, causing Three.js's built-in frustum culling to wrongly hide entire meshes and the raycaster to miss hits; the fix is to disable mesh-level `frustumCulled` and call `computeBoundingSphere()` after writing instance data each frame. Second, assigning a `MeshBasicMaterial` to `Points` objects during the selective bloom darken pass causes 1-pixel depth-writing dots that intermittently depth-occlude bloom geometry in one composer pass but not the other, producing a frame-by-frame flicker; the fix is to hide `Points` objects entirely during the bloom pass rather than swapping their material.
 
 ---
 
