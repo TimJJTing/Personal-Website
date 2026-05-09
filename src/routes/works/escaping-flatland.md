@@ -191,6 +191,8 @@ function onMouseMove(event: MouseEvent) {
 
 ![Interactivity via raycasting](/uploads/escaping-flatland-1.gif)
 
+![Raycasting in Escaping Flatland](/uploads/escaping-flatland-2.gif)
+
 This provides hover and click detection on any object in the scene, regardless of depth, using the same intuition as pointing at a physical object.
 
 ### Dynamic Visual Effects with GPU Shaders
@@ -261,7 +263,7 @@ void main() {
 }
 ```
 
-![Differential rotation](/uploads/escaping-flatland-12.gif)
+![Differential rotation](/uploads/escaping-flatland-13.gif)
 
 ### Selective Bloom
 
@@ -498,6 +500,8 @@ const atlasTexture = new THREE.CanvasTexture(canvas);
 const labelMesh = new THREE.InstancedMesh(planeGeometry, atlasMaterial, MAX_HD_COUNT);
 ```
 
+![Labels as Instanced Sprites](/uploads/escaping-flatland-11.png)
+
 ### 4. Reducing Frustum Testing: Octree
 
 Even with `InstancedMesh`, deciding which points to render with appropriate LOD on every frame was too slow. Testing each of 1M points against the camera frustum linearly is `O(n)` and it shows.
@@ -541,7 +545,7 @@ function insert(node: OctreeNode, point: Point) {
 
 Instead of testing every point, the tree is traversed and entire subtrees that do not intersect the frustum are pruned. The visible points needed are at the leaves of the intersecting octants.
 
-![Octree](/uploads/escaping-flatland-11.png)
+![Octree](/uploads/escaping-flatland-12.png)
 
 There is also a second trick worth noting, and the reason behind it is non-obvious. Each `InstancedMesh` has a fixed maximum instance count allocated at construction time: 128 slots for HD, 128 for SD, and the remainder for LD. The culling loop fills these slots in ascending distance order, so the closest points always take priority. The problem arises when more points fall inside the frustum than the total slot budget allows. Without a far-plane restriction, the LD slots could be exhausted by distant points, leaving nearby points that should legitimately be rendered as HD or SD meshes with no slot to occupy. The result would be close-up points vanishing silently whenever the camera zooms out even slightly.
 
@@ -561,7 +565,7 @@ const intersections = this.octree.cull(frustum);
 
 Here is a demo that shows how it works:
 
-![Frustum culling with Octree](/uploads/escaping-flatland-13.gif)
+![Frustum culling with Octree](/uploads/escaping-flatland-14.gif)
 
 In the demo, each point is a member of an octant, and when a frustum intersects an octant, all the points in that octant are potentially visible (marked green) and can simply be made visible. Further testing the distance between the camera and the bounding box of the octant then determines which level of detail to render for the points within it.
 
@@ -634,7 +638,9 @@ The demo renders a galaxy-like cloud of 1M random points, grouped by color into 
 
 The data is deliberately synthetic. The point was never the dataset; it was the rendering pipeline. The same architecture can be adapted to any large point cloud: geographic data, scientific simulations, network graphs in 3D space.
 
-![Final result](/uploads/escaping-flatland-demo-4.gif)
+![From Macro to Micro](/uploads/escaping-flatland-demo-4.gif)
+
+![Exploring an Immersive Universe](/uploads/escaping-flatland-demo-5.gif)
 
 ## Live Demo
 
