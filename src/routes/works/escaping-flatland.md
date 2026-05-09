@@ -471,6 +471,33 @@ The optimization strategy is as follows: on every frame, the instanced meshes ar
 
 ![InstancedMesh, LOD, and Points](/uploads/escaping-flatland-10.png)
 
+#### Labels as Instanced Sprites
+
+Labeling the nearest data points introduces the same draw-call problem in a different form. The instinctive approach is to attach a DOM element to each HD-tier point using `CSS2DObject`, Three.js's built-in facility for overlaying HTML on a 3D scene. For a small number of objects this is workable; for 128 labels per frame, each a live DOM node that the browser must lay out and composite on top of the WebGL canvas, the overhead adds up. More fundamentally, `CSS2DObject` does not compose with instancing at all: instanced mesh slots are bare matrix entries in a GPU buffer with no corresponding scene graph objects, so there is nothing for a DOM node to follow.
+
+The solution applies the same instancing principle to the labels themselves. All label text needed in a given frame is packed into a single texture atlas: a canvas element subdivided into a fixed grid of cells, each cell holding one label rendered with the Canvas 2D API. The vertex shader computes each instance's UV offset into the atlas directly from `gl_InstanceID`, so each instance samples only its own cell from the shared texture. The label plane itself is a billboard, kept facing the camera at all times by the vertex shader, scaled to a constant screen size regardless of depth, and offset upward in view space so it floats visibly above its data point.
+
+The result is a single `InstancedMesh` that renders all visible labels in one draw call, sharing the same 128-slot budget as the HD-tier geometry. Every frame, the culler writes label text alongside instance matrices, the canvas is redrawn, and the whole batch is sent to the GPU at once.
+
+```ts
+// pseudo-code for the concept
+// Pack all label text into one canvas, subdivided into cells
+const canvas = document.createElement('canvas');
+const ctx = canvas.getContext('2d');
+for (let i = 0; i < labels.length; i++) {
+  const col = i % gridW;
+  const row = Math.floor(i / gridW);
+  ctx.fillText(labels[i], (col + 0.5) * cellW, (row + 0.5) * cellH);
+}
+const atlasTexture = new THREE.CanvasTexture(canvas);
+
+// In the vertex shader, gl_InstanceID selects the right atlas cell:
+// vUv = (vec2(col, row) + uv) * vec2(1.0/gridW, 1.0/gridH);
+
+// One InstancedMesh covers all labels in a single draw call
+const labelMesh = new THREE.InstancedMesh(planeGeometry, atlasMaterial, MAX_HD_COUNT);
+```
+
 ### 4. Reducing Frustum Testing: Octree
 
 Even with `InstancedMesh`, deciding which points to render with appropriate LOD on every frame was too slow. Testing each of 1M points against the camera frustum linearly is `O(n)` and it shows.
@@ -546,10 +573,60 @@ The full optimization stack, stacked in layers:
 | --- | --- |
 | Too many scene objects | Points: all distant points as one object |
 | Too many draw calls | InstancedMesh: one draw call per LOD tier |
+| Labels on instanced geometry | InstancedLabelSprites: texture atlas, one draw call for all visible labels |
 | Expensive frustum testing | Octree: logarithmic spatial pruning |
 | Unnecessary geometry | Three-tier LOD: detail budget scales with distance |
 
 Together, these bring the frame rate above 60 FPS on an average machine with one million points in the scene.
+
+## Pitfalls
+
+Not everything in this project went according to plan. Two bugs in particular were difficult to diagnose, and both turned out to reveal something non-obvious about how Three.js works internally. They are worth documenting here.
+
+### Stale Bounding Spheres on `InstancedMesh`
+
+The symptom was subtle: entire groups of instanced meshes would disappear at certain camera angles, and raycasting against them would silently miss even when the cursor was clearly over a point. Both issues traced back to the same root cause.
+
+Three.js computes a bounding sphere for every mesh object, which it uses in two places: its own frustum culling test (to skip rendering objects outside the camera's view), and the `Raycaster`'s early rejection test (to skip intersection math when the ray cannot possibly hit the object). For a static mesh the bounding sphere is computed once and stays valid. For an `InstancedMesh` whose instance matrices are rewritten every frame, the bounding sphere becomes stale the moment the instances move. When the culler updates 128 HD instance positions but the mesh still reports a bounding sphere derived from the previous frame's layout, Three.js may conclude the entire mesh is off-screen and skip it completely, taking both rendering and raycasting with it.
+
+The fix has two parts. First, Three.js's built-in mesh-level frustum culling is disabled on all instanced meshes (`frustumCulled = false`), since the culler already handles per-point frustum testing manually and the mesh-level test adds nothing but a source of false negatives. Second, `computeBoundingSphere()` is called after instance matrices are written each frame, so the sphere the raycaster consults reflects the actual current layout rather than a stale snapshot.
+
+```ts
+// pseudo-code for the concept
+// Disable Three.js's own frustum cull — we handle it manually
+hdMesh.frustumCulled = false;
+sdMesh.frustumCulled = false;
+ldMesh.frustumCulled = false;
+
+// Inside cull(), AFTER writing instance matrices:
+hdMesh.instanceMatrix.needsUpdate = true;
+hdMesh.computeBoundingSphere(); // keep raycaster in sync
+```
+
+### Blinking Particles under Selective Bloom
+
+Once the selective bloom post-processing was working correctly for the planet meshes, a different artifact appeared: background particles would blink in a shimmer pattern whenever the camera moved near objects that had bloom enabled. The effect was consistent and frame-rate-dependent, which pointed toward something toggling between the two render passes rather than a one-time initialization problem.
+
+The selective bloom implementation works by traversing the scene before the bloom pass and darkening everything that should not glow, rendering the bloom result into a texture, then restoring the scene and compositing. For `Mesh` objects, darkening means swapping the material for a solid black `MeshBasicMaterial`. The problem was applying that same swap to `Points` objects. Assigning a `MeshBasicMaterial` to a `Points` object does not make it invisible: Three.js renders the points as 1-pixel dots that still write to the depth buffer. With hundreds of thousands of background particles, some of those depth-writing dots would happen to align with bloom-layer geometry as the camera moved. In the bloom composer pass those dots depth-occluded the geometry behind them; in the final composer pass, where the original `PointsMaterial` has `depthWrite` disabled, they did not. The bloom contribution for those pixels toggled from one pass to the other, producing a frame-by-frame flicker.
+
+The fix is to treat `Points` objects the same way `InstancedLabelSprites` were already being treated: hide them entirely during the bloom pass (`visible = false`) rather than swapping their material. This removes them from depth testing altogether, so they have no effect on what the bloom composer sees.
+
+```ts
+// pseudo-code for the concept
+scene.traverse((obj) => {
+  if (!bloomLayer.test(obj.layers)) {
+    if (obj.isPoints || obj.isInstancedLabelSprites) {
+      // Hide entirely — swapping material leaves depth-writing dots
+      obj.visible = false;
+      hiddenObjects.push(obj);
+    } else if (obj.isMesh) {
+      // Safe to darken: mesh material swap works correctly
+      savedMaterials[obj.uuid] = obj.material;
+      obj.material = darkMaterial;
+    }
+  }
+});
+```
 
 ## What This Actually Looks Like
 
