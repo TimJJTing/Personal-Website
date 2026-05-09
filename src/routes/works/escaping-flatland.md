@@ -52,6 +52,18 @@ Adding interactivity expands the possibilities further. Zooming allows inspectio
 
 That potential is what "Escaping Flatland" is trying to realize.
 
+### Inspiration
+
+The clearest reference point for what that kind of immersion can feel like is not a data visualization tool. It is a video game.
+
+When I played [Mass Effect 2](https://www.masseffect.com/), I spent an embarrassing amount of time just sitting on the galaxy map. From the Combat Information Center of the SSV Normandy, you can navigate across the Milky Way: selecting a cluster, flying into a system, approaching individual planets one by one. The map spans hundreds of systems across dozens of clusters, and almost every object in it has a codex entry: a paragraph of lore written as if by a real astrophysicist, describing atmospheric composition, geological history, orbital mechanics, or the remnants of a civilization that never made it off their home planet. No two planets read the same. The scale shifts from the full galactic view, where star clusters are points of light in a dark void, down to a single world hanging in the dark with its rings and moons, and that transition feels continuous and navigable rather than like switching between screens.
+
+What stayed with me was the feeling of traveling through it. Zooming in from a star cluster to a single planet felt like actually going somewhere: the galaxy shrank behind you, a new system filled the screen, and the codex entry for whatever rock you were approaching read like a field report from someone who had actually been there. The detail was there because the world felt real enough to deserve it.
+
+That is the quality that a data visualization rarely achieves. Most tools hand the viewer the entire dataset at full resolution from a fixed vantage point and ask them to interpret it from there. The galaxy map suggests a different model: put the viewer inside the data, let scale determine what is visible, and make navigation the mechanism of discovery. That is the experience "Escaping Flatland" is trying to replicate, with datasets instead of star systems.
+
+<YouTube url="https://www.youtube.com/watch?v=gltOzrSed1A" allowfullscreen />
+
 ## Goal
 
 The goal is to provide an immersive data exploration experience that is qualitatively unlike conventional data visualization, where the viewer feels embedded in the data rather than observing it from a fixed distance.
