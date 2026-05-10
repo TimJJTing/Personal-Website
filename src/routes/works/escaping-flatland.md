@@ -68,10 +68,11 @@ That is the quality that a data visualization rarely achieves. Most tools hand t
 
 The goal is to provide an immersive data exploration experience that is qualitatively unlike conventional data visualization, where the viewer feels embedded in the data rather than observing it from a fixed distance.
 
-Two concrete requirements define the scope:
+Three concrete requirements define the scope:
 
 - **Render 1M data points smoothly**: One million is not an arbitrary target. Since Excel 2007, Microsoft Excel's row limit has been 1,048,576, which is exactly 2^20. This makes one million the de facto ceiling for spreadsheet-scale tabular data: any dataset that fits in the most widely used data tool in the world could reasonably be handed to a visualization system. A browser-based 3D renderer should be able to handle it. One million is also, practically speaking, the point where naive browser rendering approaches stop working entirely: frame rates drop below usability, and GPU memory pressure becomes visible. Reaching this target without sacrificing frame rate therefore requires deliberate engineering rather than off-the-shelf components.
 - **Support zooming in and out for micro and macro views**: The experience should feel continuous. Zooming out should reveal the full shape of the dataset; zooming in should reveal individual points with enough detail to distinguish them.
+- **Allow hopping from one point to another when zoomed in**: At close range, a user should be able to move their focus from one data point to a neighboring one, treating each point as a place to stand rather than just a mark on a chart.
 
 ## The Stack
 
