@@ -56,7 +56,7 @@ That potential is what "Escaping Flatland" is trying to realize.
 
 The clearest reference point for what that kind of immersion can feel like is not a data visualization tool. It is a video game.
 
-When I played [Mass Effect 2](https://www.masseffect.com/), I spent an embarrassing amount of time just sitting on the galaxy map. From the Combat Information Center of the SSV Normandy, you can navigate across the Milky Way: selecting a cluster, flying into a system, approaching individual planets one by one. The map spans hundreds of systems across dozens of clusters, and almost every object in it has a codex entry: a paragraph of lore written as if by a real astrophysicist, describing atmospheric composition, geological history, orbital mechanics, or the remnants of a civilization that never made it off their home planet. No two planets read the same. The scale shifts from the full galactic view, where star clusters are points of light in a dark void, down to a single world hanging in the dark with its rings and moons, and that transition feels continuous and navigable rather than like switching between screens.
+When I played [Mass Effect 2](https://www.masseffect.com/), I spent an embarrassing amount of time just sitting on the galaxy map. From the Combat Information Center of the SSV Normandy, you can navigate across the Milky Way: selecting a cluster, flying into a system, approaching individual planets one by one. The map spans hundreds of systems across dozens of clusters, and almost every object in it has a codex entry: a paragraph of lore written as if by a real astrophysicist, describing atmospheric composition, geological history, orbital mechanics, or the remnants of a civilization that never made it off their home planet. No two planets read the same way. The scale shifts from the full galactic view, where star clusters are points of light in a dark void, down to a single world hanging in the dark with its rings and moons, and that transition feels continuous and navigable rather than like switching between screens.
 
 What stayed with me was the feeling of traveling through it. Zooming in from a star cluster to a single planet felt like actually going somewhere: the galaxy shrank behind you, a new system filled the screen, and the codex entry for whatever rock you were approaching read like a field report from someone who had actually been there. The detail was there because the world felt real enough to deserve it.
 
@@ -148,7 +148,7 @@ for (const point of dataset) {
 }
 ```
 
-This works correctly for small datasets. At the scale of hundreds of thousands of points, however, this approach becomes the source of every performance problem described in the Challenges section: each sphere is its own scene graph object, each requires its own draw call, and each must be tested individually against the camera frustum every frame. We'll look at how to overcome these limitations in the next section.
+This works correctly for small datasets. At the scale of hundreds of thousands of points, however, this approach becomes the source of every performance problem described in the Challenges section: each sphere is its own scene graph object, each requires its own draw call, and each must be tested individually against the camera frustum every frame. I'll introduce how to overcome these limitations in the next section.
 
 ### Zoom and Navigation
 
@@ -281,7 +281,7 @@ void main() {
 
 The shader produces the right movement, but there is one more aesthetic touch worth adding. In space photography and rendered 3D scenes, luminous objects bleed light into the surrounding space, producing a soft glow rather than a hard edge. A planet viewed through a telescope does not look like a crisp sphere; it radiates. The scene is perfectly renderable without this effect, but adding it transforms a technically correct sphere into something that feels luminous and alive. It is the finishing detail that makes the difference between a visualization and a view.
 
-Three.js's post-processing system works by re-rendering the already-finished scene through a stack of effect passes, similar to applying filters to a photograph after it is taken. Bloom, the glowing effect around bright objects, is one of the most visually impactful. The built-in [`UnrealBloomPass`](https://threejs.org/docs/#examples/en/postprocessing/UnrealBloomPass) is the one we use here.
+Three.js's post-processing system works by re-rendering the already-finished scene through a stack of effect passes, similar to applying filters to a photograph after it is taken. Bloom, the glowing effect around bright objects, is one of the most visually impactful post-processing effects. The built-in [`UnrealBloomPass`](https://threejs.org/docs/#examples/en/postprocessing/UnrealBloomPass) is the one I use here.
 
 The problem is that post-processing passes are applied to the entire scene uniformly, with no built-in mechanism for selective per-object bloom control. Applying bloom globally washes out everything and destroys the visual hierarchy.
 
@@ -360,7 +360,7 @@ It requires maintaining two `EffectComposer` instances and manually managing whi
 
 ## Challenges & Optimization
 
-While the above techniques are conceptually sound, assembling them without careful optimization and then rendering a large-scale dataset (over one million samples) would be problematic: excessive memory consumption, unnecessary computation, low frame rates, and consequently a poor user experience.
+While the above techniques are conceptually sound, applying them naively to a large-scale dataset of over one million samples would be problematic: excessive memory consumption, unnecessary computation, low frame rates, and consequently a poor user experience.
 
 Profiling revealed four distinct bottlenecks:
 
@@ -431,7 +431,7 @@ function assignLOD(point: Vector3, camera: Camera): LODTier {
 
 ### 3. Reducing Draw Calls with Instancing
 
-Draw calls happen when switching between different materials, geometries, or textures on the GPU. Every mesh is an object in the scene graph, and whenever it is in the frustum and should be rendered, it invokes a draw call. However, even with optimized shaders and geometries, too many draw calls can overwhelm the GPU, leading to performance degradation.
+A draw call is a command issued from the CPU to the GPU to render a piece of geometry. Every mesh is an object in the scene graph, and whenever it is in the frustum and should be rendered, it invokes a draw call. However, even with optimized shaders and geometries, too many draw calls can overwhelm the GPU, leading to performance degradation.
 
 ![Each mesh has its own draw call](/uploads/escaping-flatland-7.png)
 ![Many meshes equals many draw calls](/uploads/escaping-flatland-8.png)
@@ -528,7 +528,7 @@ I used a sparse Octree from the [`sparse-octree`](https://github.com/vanruesc/sp
 // pseudo-code for the concept
 // The bounding box is the smallest cube that contains all the points in the node.
 // If the node is a leaf, it contains the points.
-// If the node is not a leaf, it contains four children, each of which is an OctreeNode.
+// If the node is not a leaf, it contains eight children, each of which is an OctreeNode.
 // Recursive node structure
 interface OctreeNode {
   bounds: BoundingBox;
