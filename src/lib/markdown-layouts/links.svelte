@@ -18,11 +18,7 @@
 		</li>
 	{/if}
 	{#if !isResume}
-		<li>
-			<a href={resolve('/about')}>
-				<span> Resume </span>
-			</a>
-		</li>
+		<li><a href={resolve('about')}><span>Resume</span></a></li>
 	{/if}
 	{#each links as link (link.title)}
 		<li>
