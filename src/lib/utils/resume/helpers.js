@@ -16,7 +16,11 @@ export function formatDate(dateStr, { monthFormat = 'short' } = {}) {
  * @param {string} [options.separator]
  * @param {'long'|'short'|'narrow'|'numeric'|'2-digit'} [options.monthFormat]
  */
-export function formatDateRange(startTime, endTime, { separator = ' \u2014 ', monthFormat = 'short' } = {}) {
+export function formatDateRange(
+	startTime,
+	endTime,
+	{ separator = ' \u2014 ', monthFormat = 'short' } = {}
+) {
 	const start = formatDate(startTime, { monthFormat });
 	const end = endTime ? formatDate(endTime, { monthFormat }) : 'Present';
 	return `${start}${separator}${end}`;

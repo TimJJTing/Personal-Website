@@ -24,6 +24,11 @@ declare global {
 		[key: string]: unknown;
 	}
 
+	/** Instagram embed script global (https://www.instagram.com/embed.js) */
+	interface Window {
+		instgrm?: { Embeds: { process(): void } };
+	}
+
 	/** Item with computed `path`, used for rendering in lists */
 	interface Item extends ItemMetadata {
 		path: string;

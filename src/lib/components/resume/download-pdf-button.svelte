@@ -1,5 +1,6 @@
 <script>
-	import { isMobile } from '$lib/utils/device';
+	import { resolve } from '$app/paths';
+	import { isMobile } from '#lib/utils/device.js';
 
 	let { meta } = $props();
 	let filename = $derived(meta.title ? `${meta.title.replace(/\s+/g, '_')}_Resume` : 'Resume');
@@ -9,11 +10,10 @@
 	 */
 	async function handleClick(event) {
 		event.preventDefault();
-		const url = `/about/${filename}.pdf`;
 		const pdfFilename = `${filename}.pdf`;
 
 		// Fetch the PDF as a File for both share and download paths
-		const response = await fetch(url);
+		const response = await fetch(resolve('/about/[filename].pdf', { filename }));
 		const blob = await response.blob();
 		const file = new File([blob], pdfFilename, { type: 'application/pdf' });
 
@@ -42,7 +42,7 @@
 </script>
 
 <a
-	href="/about/{filename}.pdf"
+	href={resolve('/about/[filename].pdf', { filename })}
 	download="{filename}.pdf"
 	onclick={handleClick}
 	class="group/btn inline-flex items-center gap-2 text-sm font-medium text-neutral-500 transition-colors duration-300 hover:text-neutral-900 hover:no-underline dark:text-neutral-400 dark:hover:text-neutral-100"

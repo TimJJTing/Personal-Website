@@ -1,6 +1,6 @@
 <script>
-	import DownloadPdfButton from '$lib/components/resume/download-pdf-button.svelte';
-	import { formatDateRange, formatYearRange, published } from '$lib/utils/resume/helpers.js';
+	import DownloadPdfButton from '#lib/components/resume/download-pdf-button.svelte';
+	import { formatDateRange, formatYearRange, published } from '#lib/utils/resume/helpers.js';
 
 	let { data } = $props();
 	let meta = $derived(data.meta);
@@ -31,9 +31,10 @@
 		{/if}
 		<nav class="mt-8 flex flex-wrap items-center gap-4">
 			{#if meta.links?.length}
-				{#each meta.links as link}
+				{#each meta.links as link (link.url)}
 					<a
 						href={link.url}
+						rel="external"
 						class="group/link inline-flex items-center gap-1.5 text-sm font-medium text-neutral-500 transition-colors duration-300 hover:text-neutral-900 hover:no-underline dark:text-neutral-400 dark:hover:text-neutral-100"
 					>
 						<span class="group-hover/link:underline">{link.title}</span>
@@ -61,7 +62,7 @@
 			</div>
 
 			<div class="space-y-12 md:space-y-16">
-				{#each published(meta.experience.content) as job, i}
+				{#each published(meta.experience.content) as job, i (i)}
 					<div
 						class="group grid grid-cols-1 gap-2 md:grid-cols-[1fr_180px] md:gap-10"
 						style="animation: fadeSlideUp 0.5s ease-out {i * 0.1}s both"
@@ -78,7 +79,7 @@
 							</p>
 							{#if job.works?.length}
 								<ul class="mt-4 space-y-2.5">
-									{#each job.works as work}
+									{#each job.works as work, j (j)}
 										<li
 											class="relative pl-5 text-sm! leading-relaxed! text-neutral-600 before:absolute before:top-[0.65em] before:left-0 before:h-px before:w-1.5 before:bg-neutral-300 before:content-[''] dark:text-neutral-400 dark:before:bg-neutral-600"
 										>
@@ -89,7 +90,7 @@
 							{/if}
 							{#if job.projectGroups?.length}
 								<div class="mt-5 space-y-5">
-									{#each job.projectGroups as group}
+									{#each job.projectGroups as group (group.name)}
 										<div
 											class="border-l-0 pl-0 md:border-l md:border-neutral-200 md:pl-4 dark:md:border-neutral-800"
 										>
@@ -100,7 +101,7 @@
 											</h4>
 											{#if group.works?.length}
 												<ul class="mt-2.5 space-y-2.5 md:pl-4">
-													{#each group.works as work}
+													{#each group.works as work, j (j)}
 														<li
 															class="relative pl-5 text-sm! leading-relaxed! text-neutral-600 before:absolute before:top-[0.65em] before:left-0 before:h-px before:w-1.5 before:bg-neutral-300 before:content-[''] dark:text-neutral-400 dark:before:bg-neutral-600"
 														>
@@ -143,7 +144,7 @@
 			</div>
 
 			<div class="space-y-8">
-				{#each published(meta.education.content) as edu, i}
+				{#each published(meta.education.content) as edu, i (i)}
 					<div
 						class="grid grid-cols-1 gap-2 md:grid-cols-[1fr_180px] md:gap-10"
 						style="animation: fadeSlideUp 0.5s ease-out {i * 0.1}s both"
@@ -158,7 +159,7 @@
 								{edu.institute} · {edu.location}
 							</p>
 							{#if edu.works?.length}
-								{#each edu.works as work}
+								{#each edu.works as work, j (j)}
 									<p class="mt-2 text-sm! text-neutral-500 dark:text-neutral-400">
 										{work}
 									</p>
@@ -194,7 +195,7 @@
 			</div>
 
 			<div class="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-10">
-				{#each published(meta.skills.content) as skill, i}
+				{#each published(meta.skills.content) as skill, i (skill.title)}
 					<div style="animation: fadeSlideUp 0.4s ease-out {i * 0.08}s both">
 						<h3
 							class="mb-3 text-xs font-semibold tracking-[0.15em] text-neutral-400 uppercase dark:text-neutral-500"
@@ -203,7 +204,7 @@
 						</h3>
 						{#if skill.description}
 							<div class="flex flex-wrap gap-1.5">
-								{#each skill.description.split(', ') as tag}
+								{#each skill.description.split(', ') as tag (tag)}
 									<span
 										class="inline-block rounded-sm border border-neutral-200/60 bg-neutral-100 px-3 py-1.5 text-sm font-light text-neutral-700 transition-colors duration-200 hover:border-neutral-300 dark:border-neutral-700/40 dark:bg-neutral-800/80 dark:text-neutral-300 dark:hover:border-neutral-600"
 									>
@@ -231,7 +232,7 @@
 			</div>
 
 			<div class="flex flex-wrap gap-3">
-				{#each published(meta.interests.content) as interest, i}
+				{#each published(meta.interests.content) as interest, i (interest.title)}
 					<span
 						class="inline-block rounded-sm border border-neutral-200 px-4 py-2 text-sm font-light text-neutral-600 transition-all duration-300 hover:bg-neutral-100 hover:text-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:hover:bg-neutral-800/60 dark:hover:text-neutral-200"
 						style="animation: fadeSlideUp 0.4s ease-out {i * 0.06}s both"

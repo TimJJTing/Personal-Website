@@ -14,7 +14,7 @@ pnpm install
 ### Development
 
 ```bash
-# preferred, if netlify-cli is installed
+# preferred, if netlify-cli (v17.31+) is installed
 netlify dev
 # otherwise use pnpm dev, however, it will not work properly
 # because it cannot use Netlify Image CDN
@@ -40,7 +40,7 @@ pnpm test
 
 | Category         | Technology                                                                                                             |
 | ---------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| Framework        | [SvelteKit](https://kit.svelte.dev) (Svelte 5)                                                                         |
+| Framework        | [SvelteKit 3](https://svelte.dev/docs/kit) (Svelte 5) — configured via the `sveltekit()` plugin in `vite.config.js`    |
 | Styling          | [Tailwind CSS v4](https://tailwindcss.com) + [@tailwindcss/typography](https://tailwindcss.com/docs/typography-plugin) |
 | Markdown         | [mdsvex](https://mdsvex.pngwn.io) — renders `.md`/`.svx` files as Svelte components                                    |
 | Markdown plugins | [remark-footnotes](https://github.com/remarkjs/remark-footnotes)                                                       |
@@ -50,10 +50,12 @@ pnpm test
 | Image CDN        | Netlify Image CDN (requires `netlify dev` for local use)                                                               |
 | Testing          | [Vitest](https://vitest.dev) (unit) + [Playwright](https://playwright.dev) (e2e)                                       |
 | Linting          | ESLint + Prettier (with `prettier-plugin-svelte` and `prettier-plugin-tailwindcss`)                                    |
-| Runtime          | Node 22 (see `.nvmrc`)                                                                                                 |
-| Package manager  | [pnpm](https://pnpm.io)                                                                                                |
+| Runtime          | Node 24 LTS (see `.nvmrc`)                                                                                             |
+| Package manager  | [pnpm](https://pnpm.io) 12 (pinned via `packageManager`)                                                               |
 
 ## Project Structure
+
+Modules in `src/lib` are imported through the `#lib` subpath import declared in `package.json` (e.g. `#lib/components/item/index.js`).
 
 ```
 src/
@@ -61,7 +63,7 @@ src/
 │   ├── components/       # Reusable Svelte components (nav, footer, item, tag, img)
 │   │   └── resume/       # Resume-specific components (download button)
 │   ├── markdown-layouts/ # Svelte layout wrappers for mdsvex content (article, work, links, default)
-│   ├── attachments/      # Svelte action utilities (e.g. portal)
+│   ├── attachments/      # Svelte attachment utilities (e.g. portal)
 │   ├── rehype-plugins/   # Rehype plugins for mdsvex markdown processing (e.g. enhanced img)
 │   └── utils/
 │       └── resume/       # Resume PDF generation (consts, helpers, generate-pdf)

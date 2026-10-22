@@ -1,6 +1,6 @@
 <script>
-	import { NetlifyEnhancedImg } from '$lib/components/img';
-	import { TagList } from '$lib/components/tag';
+	import { NetlifyEnhancedImg } from '#lib/components/img/index.js';
+	import { TagList } from '#lib/components/tag/index.js';
 	/**
 	 * @typedef {Object} Props
 	 * @property {import('./$types').PageData} data
@@ -41,7 +41,7 @@
 				<h2>Slides</h2>
 				<ul>
 					<li>
-						<a href={slides} target="_blank">See Slides...</a>
+						<a href={slides} target="_blank" rel="external">See Slides...</a>
 					</li>
 				</ul>
 			{/if}
@@ -51,7 +51,7 @@
 				<ul>
 					{#each additionalLinks as { url, title: linkTitle }, i (i)}
 						<li>
-							<a href={url} target="_blank">{linkTitle}</a>
+							<a href={url} target="_blank" rel="external">{linkTitle}</a>
 						</li>
 					{/each}
 				</ul>

@@ -10,7 +10,7 @@ export async function load({ params }) {
 			content: article.default,
 			meta: article.metadata
 		};
-	} catch (e) {
+	} catch {
 		error(404, ` Could not find ${params.slug}`);
 	}
 }

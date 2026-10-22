@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit';
-import { generateResumePdf } from '$lib/utils/resume/generate-pdf.js';
+import { generateResumePdf } from '#lib/utils/resume/generate-pdf.js';
 
 export const prerender = true;
 

@@ -30,7 +30,7 @@
 		width = undefined,
 		height = undefined,
 		class: className = undefined,
-		loading = "lazy",
+		loading = 'lazy',
 		...restProps
 	} = $props();
 

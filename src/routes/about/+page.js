@@ -8,7 +8,7 @@ export async function load() {
 		return {
 			meta: about.metadata
 		};
-	} catch (e) {
+	} catch {
 		error(404, `Could not find about`);
 	}
 }

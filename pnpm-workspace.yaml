@@ -1,3 +1,7 @@
-onlyBuiltDependencies:
-  - esbuild
-  - sharp
+allowBuilds:
+  # postinstall only prints a funding banner
+  core-js: false
+
+overrides:
+  # GHSA-rj75-hqrm-r3gf: @tailwindcss/typography pins a vulnerable 6.0.10
+  postcss-selector-parser: ^7.1.6

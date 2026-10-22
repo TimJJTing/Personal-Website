@@ -24,7 +24,7 @@
 					videoId = match[2];
 				}
 			}
-		} catch (e) {
+		} catch {
 			console.error('Error parsing YouTube URL:', videoUrl);
 		}
 		return { id: videoId, isShort };
