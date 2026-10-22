@@ -1,3 +1,4 @@
+/** @type {import('svelte/compiler').PreprocessorGroup} */
 export const autoImportInstagram = {
 	name: 'auto-import-instagram',
 	markup({ content, filename }) {
@@ -10,10 +11,10 @@ export const autoImportInstagram = {
 		let instanceScriptMatch = null;
 		let match;
 
-		// Find the first instance script (not context="module")
+		// Find the first instance script (not `<script module>`)
 		while ((match = scriptRegex.exec(content)) !== null) {
 			const attrs = match[1];
-			if (!attrs.includes('context="module"')) {
+			if (!/\bmodule\b/.test(attrs)) {
 				instanceScriptMatch = match;
 				break;
 			}
@@ -22,7 +23,7 @@ export const autoImportInstagram = {
 		if (instanceScriptMatch) {
 			const [fullMatch, attrs, innerContent] = instanceScriptMatch;
 			// Inject import at the top of the existing script
-			const newScript = `<script${attrs}>\n\timport { Instagram } from '$lib/components';${innerContent}</script>`;
+			const newScript = `<script${attrs}>\n\timport { Instagram } from '#lib/components/index.js';${innerContent}</script>`;
 			return {
 				code: content.replace(fullMatch, newScript)
 			};
@@ -38,12 +39,12 @@ export const autoImportInstagram = {
 				const before = content.slice(0, frontmatterEnd);
 				const after = content.slice(frontmatterEnd);
 				return {
-					code: `${before}\n<script>\n\timport { Instagram } from '$lib/components';\n</script>\n${after}`
+					code: `${before}\n<script>\n\timport { Instagram } from '#lib/components/index.js';\n</script>\n${after}`
 				};
 			} else {
 				// No frontmatter, insert at top
 				return {
-					code: `<script>\n\timport { Instagram } from '$lib/components';\n</script>\n${content}`
+					code: `<script>\n\timport { Instagram } from '#lib/components/index.js';\n</script>\n${content}`
 				};
 			}
 		}

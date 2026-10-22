@@ -10,7 +10,7 @@ export async function load() {
 		return {
 			meta: config.metadata
 		};
-	} catch (e) {
+	} catch {
 		error(500, 'Cannot load site configuration');
 	}
 }

@@ -1,12 +1,11 @@
 @import 'tailwindcss';
 
 @plugin '@tailwindcss/typography';
-@plugin '@tailwindcss/container-queries';
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:where(.dark, .dark *));
 
 article {
-	@apply prose prose-img:rounded-xl prose-figure:mx-auto prose-neutral dark:prose-invert max-w-none;
+	@apply prose max-w-none prose-neutral dark:prose-invert prose-figure:mx-auto prose-img:rounded-xl;
 
 	:where(:not(pre)) > :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
 		background-color: rgba(255, 255, 255, 0.1);
@@ -34,24 +33,6 @@ html:not(.dark) .shiki,
 html:not(.dark) .shiki span {
 	color: var(--shiki-light) !important;
 	background-color: var(--shiki-light-bg) !important;
-}
-
-/*
-  The default border color has changed to `currentcolor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
-@layer base {
-	*,
-	::after,
-	::before,
-	::backdrop,
-	::file-selector-button {
-		border-color: var(--color-gray-200, currentcolor);
-	}
 }
 
 a {

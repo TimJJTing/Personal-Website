@@ -8,11 +8,13 @@
 </script>
 
 {#if filteredItems.length > 0}
-	<div class="flex items-baseline gap-4 mb-10 md:mb-14">
-		<h2 class="text-3xl md:text-4xl font-extralight tracking-tight text-neutral-300 dark:text-neutral-700">
+	<div class="mb-10 flex items-baseline gap-4 md:mb-14">
+		<h2
+			class="text-3xl font-extralight tracking-tight text-neutral-300 md:text-4xl dark:text-neutral-700"
+		>
 			{title}
 		</h2>
-		<div class="flex-1 h-px bg-neutral-200 dark:bg-neutral-800"></div>
+		<div class="h-px flex-1 bg-neutral-200 dark:bg-neutral-800"></div>
 	</div>
 	<div class="space-y-2">
 		{#each filteredItems as item, idx (idx)}

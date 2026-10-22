@@ -1,5 +1,5 @@
 <script>
-	import { ItemList } from '$lib/components/item';
+	import { ItemList } from '#lib/components/item/index.js';
 	let { data } = $props();
 	let articles = $derived(data.articles);
 	let title = $derived(data.meta.title);

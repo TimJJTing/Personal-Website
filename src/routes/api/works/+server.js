@@ -1,4 +1,4 @@
-import { error, json } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
 
 async function getWorks() {
 	try {
@@ -15,12 +15,12 @@ async function getWorks() {
 			.filter((a) => a.published)
 			.sort((first, second) => Number(second.year ?? 0) - Number(first.year ?? 0));
 		return works;
-	} catch (e) {
+	} catch {
 		error(500, 'Cannot get articles');
 	}
 }
 
 export async function GET() {
 	const works = await getWorks();
-	return json(works);
+	return Response.json(works);
 }

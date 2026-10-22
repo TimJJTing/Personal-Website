@@ -2,3 +2,7 @@
 package-lock.json
 pnpm-lock.yaml
 yarn.lock
+
+# Content (mdsvex markdown is authored by hand / via the CMS)
+src/routes/**/*.md
+static/
