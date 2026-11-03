@@ -102,7 +102,7 @@ sequenceDiagram
     M->>P: Cat says the line in a bubble
 ```
 
-![One turn: the cat holds a prop for each tool, then sums up the reply](/uploads/claudesay-turn.gif)
+![The cat holds a wand while the tests run, then sums up the reply](/uploads/claudesay-turn.gif)
 
 There's only ever one bubble. Each new turn replaces it, and nothing lands in the transcript. No Bash, no `jq`, no background process. The replies and the stored messages stay exactly as Claude wrote them, and the ASCII art never enters Claude's context.
 
@@ -187,7 +187,7 @@ The main model pays nothing. The mod adds nothing to the system prompt or the me
 
 The mood in each bubble isn't fixed. Haiku picks from a small set — happy, excited, thinking, focused, upset, error — based on what the reply says. A successful edit gets a different face than a warning. Each mood can have a list of faces, and the mod picks one per line, so the cat doesn't look the same after every success. The sleeping face is the cat's own; Haiku never picks it.
 
-![A failing test run gets the error face](/uploads/claudesay-moods.gif)
+![A failing test run gets the error face](/uploads/claudesay-moods.png)
 
 ## Make It Your Own
 
@@ -226,7 +226,7 @@ For example, this gives the cat a new focused face and a lightning bolt in its l
 }
 ```
 
-![The custom focused face and lightning bolt while Claude runs the tests](/uploads/claudesay-custom.gif)
+![The custom focused face and lightning bolt while Claude runs the tests](/uploads/claudesay-custom.png)
 
 The mod reloads the file at the start of every turn, so changes show up on the next reply without a restart. A broken file doesn't break anything either: the mod skips a bad field and tells you which one, and if the whole file is invalid, it just draws the default cat.
 
