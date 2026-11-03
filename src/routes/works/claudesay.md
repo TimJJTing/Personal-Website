@@ -10,9 +10,6 @@ categories:
   - typescript
 published: true
 thumbnail: /uploads/claudesay-thumbnail.png
-images:
-  - image: /uploads/claudesay-demo.png
-    caption: Fig. 1 - Demo
 additionalLinks:
   - url: https://github.com/TimJJTing/Claudesay
     title: GitHub
