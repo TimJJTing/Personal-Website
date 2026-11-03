@@ -10,9 +10,6 @@ categories:
   - typescript
 published: true
 thumbnail: /uploads/claudesay-thumbnail.png
-images:
-  - image: /uploads/claudesay-demo.png
-    caption: Fig. 1 - Demo
 additionalLinks:
   - url: https://github.com/TimJJTing/Claudesay
     title: GitHub
@@ -102,6 +99,8 @@ sequenceDiagram
     M->>P: Cat says the line in a bubble
 ```
 
+![The cat holds a wand while the tests run, then sums up the reply](/uploads/claudesay-turn.gif)
+
 There's only ever one bubble. Each new turn replaces it, and nothing lands in the transcript. No Bash, no `jq`, no background process. The replies and the stored messages stay exactly as Claude wrote them, and the ASCII art never enters Claude's context.
 
 On a wide fullscreen terminal the pane docks beside the transcript, with the cat sitting at the bottom next to the prompt. On a narrow one, or in tmux, it sits inline above the prompt. Type `/claudesay` to open it at any width.
@@ -144,6 +143,8 @@ New crew members don't just appear. In the docked pane, a plane flies across the
 
 While a subagent works, its cat holds the prop for whatever tool that subagent is using. When it's done, the cat turns into a spark ✦ and disappears, and the others slide over to fill the gap. If the run fails, it shows the error face for a moment before leaving, and the captain looks upset. When there are more subagents than slots, the last slot just says `+3 more`.
 
+![A crew of three subagents parachutes in, works, and leaves in a spark](/uploads/claudesay-crew.gif)
+
 ## Naps and Birds
 
 A cat that stares at you all day gets a bit much. So when nothing happens for two minutes, it falls asleep: the face turns to `( ɛ_ɛ  )`, and if the bubble has nothing left to say, it snores: `z`, `z Z`, `z Z z…`. A new prompt, a key in the prompt box, or your answer to a question wakes it up again. Waiting on you counts as idle too, so if Claude asks a question and you go get coffee, the cat naps with you.
@@ -155,6 +156,8 @@ Every so often, a bird flies across the docked pane, flapping between two frames
 ```
 
 It flies behind everything and never lands in the bubble. After five minutes of idle time, the mod stops the snoring and sends no more birds, so a forgotten session runs no timers at all. Both idle times live in `/config`.
+
+![The cat falls asleep, snores while a bird flies by, and wakes up at a key press](/uploads/claudesay-nap.gif)
 
 ## Keeping the Cat Honest
 
@@ -180,6 +183,8 @@ The main model pays nothing. The mod adds nothing to the system prompt or the me
 ## Moods
 
 The mood in each bubble isn't fixed. Haiku picks from a small set — happy, excited, thinking, focused, upset, error — based on what the reply says. A successful edit gets a different face than a warning. Each mood can have a list of faces, and the mod picks one per line, so the cat doesn't look the same after every success. The sleeping face is the cat's own; Haiku never picks it.
+
+![A failing test run gets the error face](/uploads/claudesay-moods.png)
 
 ## Make It Your Own
 
@@ -213,10 +218,12 @@ For example, this gives the cat a new focused face and a lightning bolt in its l
     "focused": "( •_•  )"
   },
   "tools": {
-    "Bash": { "prop": "⚡", "side": "left" }
+    "Bash": { "prop": "⚡", "mood": "focused", "side": "left" }
   }
 }
 ```
+
+![The custom focused face and lightning bolt while Claude runs the tests](/uploads/claudesay-custom.png)
 
 The mod reloads the file at the start of every turn, so changes show up on the next reply without a restart. A broken file doesn't break anything either: the mod skips a bad field and tells you which one, and if the whole file is invalid, it just draws the default cat.
 
